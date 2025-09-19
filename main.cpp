@@ -7,6 +7,7 @@
 #include <vector>
 #include <cstring>
 
+
 const uint32_t WIDTH = 800;
 const uint32_t HEIGHT = 600;
 
@@ -23,6 +24,8 @@ const std::vector<const char*> validationLayers = {
 class HelloTriangleApplication {
 public:
 	void run() {
+		setupDebugMessenger();
+		getRequiredExtensions();
 		createInstance();
 		initWindow();
 		initVulkan();
@@ -33,6 +36,19 @@ public:
 private:
 	GLFWwindow* window;
 	VkInstance instance;
+
+	static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
+		VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+		VkDebugUtilsMessageTypeFlagsEXT messageType,
+		const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
+		void* pUserData) {
+		
+		if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT) {
+			std::cerr << "validation layer:" << pCallbackData->pMessage << std::endl;
+		}
+
+		return VK_FALSE;
+	}
 
 	bool checkValidationLayerSupport() {
 		uint32_t layerCount;
@@ -58,6 +74,20 @@ private:
 		return true;
 	}
 
+	std::vector<const char*> getRequiredExtensions() {
+		uint32_t glfwExtensionCount = 0;
+		const char** glfwExtensions;
+		glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+		std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
+
+		if (enableValidationLayers) {
+			extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+		}
+
+		return extensions;
+	}
+
 	void initWindow() {
 		glfwInit();
 
@@ -69,6 +99,11 @@ private:
 
 	void initVulkan() {
 		createInstance();
+		setupDebugMessenger();
+	}
+
+	void setupDebugMessenger() {
+		if (!enableValidationLayers) return;
 	}
 
 	void createInstance() {
@@ -103,10 +138,9 @@ private:
 		}
 
 		// ---------------------- Extensions ----------------------
-		uint32_t glfwExtensionCount = 0;
-		const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-		createInfo.enabledExtensionCount = glfwExtensionCount;
-		createInfo.ppEnabledExtensionNames = glfwExtensions;
+		auto extensions = getRequiredExtensions();
+		createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
+		createInfo.ppEnabledExtensionNames = extensions.data();
 
 		// ---------------------- Validation Layers ----------------------
 		// Ignored for now
