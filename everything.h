@@ -7,6 +7,8 @@
 #include <cstdlib>
 #include <vector>
 #include <cstring>
+#include <optional>
+#include <map>
 
 
 const uint32_t WIDTH = 800;
