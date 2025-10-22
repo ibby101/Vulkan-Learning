@@ -91,7 +91,7 @@ void VulkanBase::pickPhysicalDevice() {
 }
 
 void VulkanBase::createLogicalDevice() {
-	QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
+	QueueFamilyIndices indices = findQueueFamilies(physicalDevice, surface);
 
 	VkDeviceQueueCreateInfo queueCreateInfo{};
 
@@ -129,9 +129,8 @@ void VulkanBase::createLogicalDevice() {
 	vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &graphicsQueue);
 }
 
-void VulkanBase::createSurface() {
-	VkWin32SurfaceCreateInfoKHR createInfo{};
-	createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
-	createInfo.hwnd = glfwGetWin32Window(window);
-	createInfo.hinstance = GetModuleHandle(nullptr)
+void VulkanBase::createSurface(GLFWwindow* window) {
+	if (glfwCreateWindowSurface(instance, window, nullptr, &surface) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create window surface.");
+	}
 }

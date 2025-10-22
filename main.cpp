@@ -21,6 +21,7 @@ private:
 	void initVulkan() {
 		createInstance();
 		setupDebugMessenger(instance);
+		createSurface(window);
 		pickPhysicalDevice();
 		createLogicalDevice();
 	}
@@ -32,13 +33,18 @@ private:
 	}
 
 	void cleanup() {
+		vkDestroyDevice(device, nullptr);
+
+
 		if (enableValidationLayers) {
 			DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
 		}
 
-		vkDestroyDevice(device, nullptr);
+		// surface and instance cleanup
+		vkDestroySurfaceKHR(instance, surface, nullptr);
 		vkDestroyInstance(instance, nullptr);
 
+		// glfw cleanup
 		glfwDestroyWindow(window);
 		glfwTerminate();
 	}
@@ -63,7 +69,7 @@ private:
 		}
 		
 		// checking if the device has the required queue families
-		QueueFamilyIndices indices = findQueueFamilies(device);
+		QueueFamilyIndices indices = findQueueFamilies(device, surface);
 		if (!indices.isComplete()) {
 			return 0;
 		}

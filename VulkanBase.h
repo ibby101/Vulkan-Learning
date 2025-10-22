@@ -15,5 +15,5 @@ protected:
 	void createInstance();
 	void pickPhysicalDevice();
 	void createLogicalDevice();
-	void createSurface();
+	void createSurface(GLFWwindow* window);
 };
