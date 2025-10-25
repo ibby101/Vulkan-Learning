@@ -8,12 +8,15 @@ protected:
 	VkDevice device = VK_NULL_HANDLE;
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 	VkQueue graphicsQueue = VK_NULL_HANDLE;
+	VkQueue presentQueue = VK_NULL_HANDLE;
 	VkSurfaceKHR surface = VK_NULL_HANDLE;
 
 	virtual int rateDeviceSuitability(VkPhysicalDevice device) = 0;
 	bool isDeviceSuitable(VkPhysicalDevice device);
+	bool checkDeviceExtensionSupport(VkPhysicalDevice device);
 	void createInstance();
 	void pickPhysicalDevice();
 	void createLogicalDevice();
 	void createSurface(GLFWwindow* window);
+
 };

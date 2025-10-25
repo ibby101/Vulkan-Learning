@@ -67,9 +67,14 @@ private:
 		if (!deviceFeatures.geometryShader) {
 			return 0;
 		}
+
+		if (!checkDeviceExtensionSupport(device)) {
+			return 0;
+		}
 		
 		// checking if the device has the required queue families
 		QueueFamilyIndices indices = findQueueFamilies(device, surface);
+
 		if (!indices.isComplete()) {
 			return 0;
 		}
