@@ -68,14 +68,21 @@ private:
 			return 0;
 		}
 
-		if (!checkDeviceExtensionSupport(device)) {
-			return 0;
+		bool extensionsSupported = checkDeviceExtensionSupport(device);
+
+		bool swapChainAdequate = false;
+
+		// checking for swap chain support only if extensions are supported
+		if (extensionsSupported) {
+			SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device);
+			swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
 		}
+	
 		
 		// checking if the device has the required queue families
 		QueueFamilyIndices indices = findQueueFamilies(device, surface);
 
-		if (!indices.isComplete()) {
+		if (!indices.isComplete() || !swapChainAdequate) {
 			return 0;
 		}
 

@@ -2,7 +2,13 @@
 #include "VulkanDebug.h"
 #include "VulkanQueue.h"
 
-class VulkanBase : public VulkanDebug, public VulkanQueue {
+struct SwapChainSupportDetails {
+	VkSurfaceCapabilitiesKHR capabilities;
+	std::vector<VkSurfaceFormatKHR> formats;
+	std::vector<VkPresentModeKHR> presentModes;
+};
+
+class VulkanBase : public VulkanDebug, public VulkanQueue {	
 protected:
 	VkInstance instance = VK_NULL_HANDLE;
 	VkDevice device = VK_NULL_HANDLE;
@@ -18,5 +24,6 @@ protected:
 	void pickPhysicalDevice();
 	void createLogicalDevice();
 	void createSurface(GLFWwindow* window);
+	SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
 
 };
