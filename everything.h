@@ -14,6 +14,7 @@
 #include <map>
 #include <set>
 #include <cstdint>
+#include <algorithm>
 
 
 const uint32_t WIDTH = 800;

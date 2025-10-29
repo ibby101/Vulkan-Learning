@@ -24,6 +24,7 @@ private:
 		createSurface(window);
 		pickPhysicalDevice();
 		createLogicalDevice();
+		createSwapChain();
 	}
 
 	void mainLoop() {

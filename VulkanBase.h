@@ -23,7 +23,11 @@ protected:
 	void createInstance();
 	void pickPhysicalDevice();
 	void createLogicalDevice();
+	void createSwapChain();
 	void createSurface(GLFWwindow* window);
 	SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
+	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
+	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
+	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities, GLFWwindow* window);
 
 };
