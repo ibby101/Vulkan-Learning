@@ -6,6 +6,7 @@ struct SwapChainSupportDetails {
 	VkSurfaceCapabilitiesKHR capabilities;
 	std::vector<VkSurfaceFormatKHR> formats;
 	std::vector<VkPresentModeKHR> presentModes;
+	
 };
 
 class VulkanBase : public VulkanDebug, public VulkanQueue {	
@@ -16,6 +17,11 @@ protected:
 	VkQueue graphicsQueue = VK_NULL_HANDLE;
 	VkQueue presentQueue = VK_NULL_HANDLE;
 	VkSurfaceKHR surface = VK_NULL_HANDLE;
+	VkSwapchainKHR swapChain = VK_NULL_HANDLE;
+	VkFormat swapChainImageFormat;
+	VkExtent2D swapChainExtent;
+	std::vector<VkImage> swapChainImages;
+	std::vector<VkImageView> swapChainImageViews;
 
 	virtual int rateDeviceSuitability(VkPhysicalDevice device) = 0;
 	bool isDeviceSuitable(VkPhysicalDevice device);
@@ -25,6 +31,8 @@ protected:
 	void createLogicalDevice();
 	void createSwapChain();
 	void createSurface(GLFWwindow* window);
+	void createImageViews();
+	void createGraphicsPipeline();
 	SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
 	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);

@@ -15,7 +15,7 @@ private:
 		glfwInit();
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-		window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
+		window = glfwCreateWindow(WIDTH, HEIGHT, "Triangulatory Triangulator", nullptr, nullptr);
 	}
 
 	void initVulkan() {
@@ -25,6 +25,8 @@ private:
 		pickPhysicalDevice();
 		createLogicalDevice();
 		createSwapChain();
+		createImageViews();
+		createGraphicsPipeline();
 	}
 
 	void mainLoop() {
@@ -34,6 +36,12 @@ private:
 	}
 
 	void cleanup() {
+		for (auto imageView : swapChainImageViews) {
+			vkDestroyImageView(device, imageView, nullptr);
+		}
+
+		vkDestroySwapchainKHR(device, swapChain, nullptr);
+
 		vkDestroyDevice(device, nullptr);
 
 

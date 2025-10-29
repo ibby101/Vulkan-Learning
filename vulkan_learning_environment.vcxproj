@@ -138,6 +138,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="shader.vert" />
     <ClCompile Include="VulkanBase.cpp" />
     <ClCompile Include="VulkanDebug.cpp" />
     <ClCompile Include="VulkanQueue.cpp" />
@@ -147,6 +148,9 @@
     <ClInclude Include="VulkanBase.h" />
     <ClInclude Include="VulkanDebug.h" />
     <ClInclude Include="VulkanQueue.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader.frag" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

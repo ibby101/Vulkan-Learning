@@ -15,6 +15,7 @@
 #include <set>
 #include <cstdint>
 #include <algorithm>
+#include <fstream>
 
 
 const uint32_t WIDTH = 800;
