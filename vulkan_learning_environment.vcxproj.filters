@@ -52,5 +52,11 @@
     <None Include="shader.frag">
       <Filter>shaders</Filter>
     </None>
+    <None Include="frag.spv">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="vert.spv">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
