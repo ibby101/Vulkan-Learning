@@ -20,6 +20,7 @@ protected:
 	VkSwapchainKHR swapChain = VK_NULL_HANDLE;
 	VkFormat swapChainImageFormat;
 	VkExtent2D swapChainExtent;
+	VkRenderPass renderPass;
 	VkPipelineLayout pipelineLayout;
 	std::vector<VkImage> swapChainImages;
 	std::vector<VkImageView> swapChainImageViews;
@@ -33,6 +34,7 @@ protected:
 	void createSwapChain();
 	void createSurface(GLFWwindow* window);
 	void createImageViews();
+	void createRenderPass();
 	void createGraphicsPipeline();
 	VkShaderModule createShaderModule(const std::vector<char>& code);
 	SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
