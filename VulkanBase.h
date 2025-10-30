@@ -20,6 +20,7 @@ protected:
 	VkSwapchainKHR swapChain = VK_NULL_HANDLE;
 	VkFormat swapChainImageFormat;
 	VkExtent2D swapChainExtent;
+	VkPipelineLayout pipelineLayout;
 	std::vector<VkImage> swapChainImages;
 	std::vector<VkImageView> swapChainImageViews;
 
@@ -38,5 +39,6 @@ protected:
 	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
 	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities, GLFWwindow* window);
+	
 
 };
