@@ -28,6 +28,7 @@ private:
 		createImageViews();
 		createRenderPass();
 		createGraphicsPipeline();
+		createFramebuffers();
 	}
 
 	void mainLoop() {
@@ -37,6 +38,8 @@ private:
 	}
 
 	void cleanup() {
+
+		vkDestroyPipeline(device, graphicsPipeline, nullptr);
 
 		vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
 
