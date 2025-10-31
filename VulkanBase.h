@@ -3,7 +3,7 @@
 #include "VulkanQueue.h"
 
 struct SwapChainSupportDetails {
-	VkSurfaceCapabilitiesKHR capabilities;
+	VkSurfaceCapabilitiesKHR capabilities{};
 	std::vector<VkSurfaceFormatKHR> formats;
 	std::vector<VkPresentModeKHR> presentModes;
 	
@@ -24,10 +24,14 @@ protected:
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
 	VkCommandPool commandPool;
-	VkCommandBuffer commandBuffer;
+	std::vector<VkCommandBuffer> commandBuffers;
+	std::vector<VkSemaphore> imageAvailableSemaphores;
+	std::vector<VkSemaphore> renderFinishedSemaphores;
+	std::vector<VkFence> inFlightFences;
 	std::vector<VkImage> swapChainImages;
 	std::vector<VkImageView> swapChainImageViews;
 	std::vector<VkFramebuffer> swapChainFramebuffers;
+	uint32_t currentFrame = 0;
 
 	virtual int rateDeviceSuitability(VkPhysicalDevice device) = 0;
 	bool isDeviceSuitable(VkPhysicalDevice device);
@@ -44,6 +48,7 @@ protected:
 	void createCommandPool();
 	void createCommandBuffer();
 	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+	void createSyncObjects();
 	void drawFrame();
 	VkShaderModule createShaderModule(const std::vector<char>& code);
 	SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);

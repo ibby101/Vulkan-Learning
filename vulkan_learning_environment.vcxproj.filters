@@ -30,9 +30,6 @@
     <ClCompile Include="VulkanBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="shader.vert">
-      <Filter>shaders</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="everything.h">
@@ -56,6 +53,9 @@
       <Filter>shaders</Filter>
     </None>
     <None Include="vert.spv">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shader.vert">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

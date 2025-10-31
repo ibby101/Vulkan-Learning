@@ -138,7 +138,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="shader.vert" />
+    <None Include="shader.vert">
+      <FileType>Document</FileType>
+    </None>
     <ClCompile Include="VulkanBase.cpp" />
     <ClCompile Include="VulkanDebug.cpp" />
     <ClCompile Include="VulkanQueue.cpp" />
