@@ -39,6 +39,10 @@ private:
 
 	void cleanup() {
 
+		for (auto framebuffer : swapChainFramebuffers) {
+			vkDestroyFramebuffer(device, framebuffer, nullptr);
+		}
+
 		vkDestroyPipeline(device, graphicsPipeline, nullptr);
 
 		vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
