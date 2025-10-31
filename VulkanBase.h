@@ -23,6 +23,8 @@ protected:
 	VkRenderPass renderPass;
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
+	VkCommandPool commandPool;
+	VkCommandBuffer commandBuffer;
 	std::vector<VkImage> swapChainImages;
 	std::vector<VkImageView> swapChainImageViews;
 	std::vector<VkFramebuffer> swapChainFramebuffers;
@@ -39,6 +41,10 @@ protected:
 	void createRenderPass();
 	void createGraphicsPipeline();
 	void createFramebuffers();
+	void createCommandPool();
+	void createCommandBuffer();
+	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+	void drawFrame();
 	VkShaderModule createShaderModule(const std::vector<char>& code);
 	SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
 	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
