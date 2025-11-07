@@ -50,6 +50,8 @@ protected:
 	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 	void createSyncObjects();
 	void drawFrame();
+	void cleanupSwapChain();
+	void recreateSwapChain();
 	VkShaderModule createShaderModule(const std::vector<char>& code);
 	SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
 	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
