@@ -32,6 +32,7 @@ protected:
 	std::vector<VkImageView> swapChainImageViews;
 	std::vector<VkFramebuffer> swapChainFramebuffers;
 	uint32_t currentFrame = 0;
+	bool framebufferResized = false;
 
 	virtual int rateDeviceSuitability(VkPhysicalDevice device) = 0;
 	bool isDeviceSuitable(VkPhysicalDevice device);
@@ -57,6 +58,4 @@ protected:
 	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
 	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities, GLFWwindow* window);
-	
-
 };

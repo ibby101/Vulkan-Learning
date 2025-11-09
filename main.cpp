@@ -13,9 +13,12 @@ private:
 
 	void initWindow() {
 		glfwInit();
+
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
 		window = glfwCreateWindow(WIDTH, HEIGHT, "Triangulatory Triangulator", nullptr, nullptr);
+		glfwSetWindowUserPointer(window, this);
+		glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
 	}
 
 	void initVulkan() {
@@ -74,6 +77,11 @@ private:
 		// glfw cleanup
 		glfwDestroyWindow(window);
 		glfwTerminate();
+	}
+
+	static void framebufferResizeCallback(GLFWwindow* window, int width, int height) {
+		auto app = reinterpret_cast<HelloTriangleApplication*>(glfwGetWindowUserPointer(window));
+		app->framebufferResized = true;
 	}
 
 	int rateDeviceSuitability(VkPhysicalDevice device) override {
