@@ -1,5 +1,6 @@
 #include "VulkanBase.h"
 
+ 
 bool VulkanBase::isDeviceSuitable(VkPhysicalDevice device) {
 	return rateDeviceSuitability(device) > 0;
 }
@@ -270,7 +271,7 @@ void VulkanBase::createSwapChain() {
 
 	VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
 	VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
-	VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities, nullptr);
+	VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities, window);
 
 	uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
 
@@ -771,7 +772,16 @@ void VulkanBase::cleanupSwapChain() {
 	vkDestroySwapchainKHR(device, swapChain, nullptr);
 }
 
-void VulkanBase::recreateSwapChain() {
+void VulkanBase::recreateSwapChain(){
+	int width = 0, height = 0;
+
+	glfwGetFramebufferSize(window, &width, &height);
+
+	while (width == 0 || height == 0) {
+		glfwGetFramebufferSize(window, &width, &height);
+		glfwWaitEvents();
+	}
+
 	vkDeviceWaitIdle(device);
 
 	cleanupSwapChain();

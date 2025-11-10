@@ -8,14 +8,10 @@ public:
 		mainLoop();
 		cleanup();
 	}
-private:
-	GLFWwindow* window = nullptr;
-
+private:		
 	void initWindow() {
 		glfwInit();
-
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-
 		window = glfwCreateWindow(WIDTH, HEIGHT, "Triangulatory Triangulator", nullptr, nullptr);
 		glfwSetWindowUserPointer(window, this);
 		glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);

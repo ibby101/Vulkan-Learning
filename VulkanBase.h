@@ -11,6 +11,7 @@ struct SwapChainSupportDetails {
 
 class VulkanBase : public VulkanDebug, public VulkanQueue {	
 protected:
+	GLFWwindow* window = nullptr;
 	VkInstance instance = VK_NULL_HANDLE;
 	VkDevice device = VK_NULL_HANDLE;
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
