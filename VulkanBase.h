@@ -6,7 +6,11 @@ struct SwapChainSupportDetails {
 	VkSurfaceCapabilitiesKHR capabilities{};
 	std::vector<VkSurfaceFormatKHR> formats;
 	std::vector<VkPresentModeKHR> presentModes;
-	
+};
+
+struct Vertex {
+	glm::vec2 pos;
+	glm::vec3 color;
 };
 
 class VulkanBase : public VulkanDebug, public VulkanQueue {	

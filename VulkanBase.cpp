@@ -102,6 +102,8 @@ void VulkanBase::createInstance() {
 	}
 }
 
+// ---------------------- Physical Device Selection ----------------------
+
 void VulkanBase::pickPhysicalDevice() {
 	// adding ordered map
 	std::multimap<int, VkPhysicalDevice> candidates;
@@ -127,6 +129,8 @@ void VulkanBase::pickPhysicalDevice() {
 		throw std::runtime_error("failed to find a suitable GPU");
 	}
 }
+
+// ---------------------- Logical Device Creation ----------------------
 
 void VulkanBase::createLogicalDevice() {
 	QueueFamilyIndices indices = findQueueFamilies(physicalDevice, surface);
@@ -179,11 +183,15 @@ void VulkanBase::createLogicalDevice() {
 	vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);
 }
 
+// ---------------------- Swap Chain Support ----------------------
+
 void VulkanBase::createSurface(GLFWwindow* window) {
 	if (glfwCreateWindowSurface(instance, window, nullptr, &surface) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create window surface.");
 	}
 }
+
+// checking for device extension support
 
 bool VulkanBase::checkDeviceExtensionSupport(VkPhysicalDevice device) {
 	uint32_t extensionCount;
@@ -200,6 +208,8 @@ bool VulkanBase::checkDeviceExtensionSupport(VkPhysicalDevice device) {
 
 	return requiredExtensions.empty();
 }
+
+// ---------------------- Querying Swap Chain Support Details ----------------------
 
 SwapChainSupportDetails VulkanBase::querySwapChainSupport(VkPhysicalDevice device) {
 	SwapChainSupportDetails details;
@@ -225,6 +235,8 @@ SwapChainSupportDetails VulkanBase::querySwapChainSupport(VkPhysicalDevice devic
 	return details;
 }
 
+// choosing the best available surface format
+
 VkSurfaceFormatKHR VulkanBase::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) {
 	for (const auto& availableFormat : availableFormats) {
 		if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
@@ -234,6 +246,8 @@ VkSurfaceFormatKHR VulkanBase::chooseSwapSurfaceFormat(const std::vector<VkSurfa
 	return availableFormats[0];
 }
 
+// choosing the best available present mode
+
 VkPresentModeKHR VulkanBase::chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes) {
 	for (const auto& availablePresentMode : availablePresentModes) {
 		if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
@@ -242,6 +256,8 @@ VkPresentModeKHR VulkanBase::chooseSwapPresentMode(const std::vector<VkPresentMo
 	}
 	return VK_PRESENT_MODE_FIFO_KHR;
 }
+
+// choosing the swap extent (resolution of the swap chain images)
 
 VkExtent2D VulkanBase::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities, GLFWwindow* window) {
 	if (capabilities.currentExtent.width != UINT32_MAX) {
