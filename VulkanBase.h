@@ -1,12 +1,9 @@
 #pragma once
+
 #include "VulkanDebug.h"
 #include "VulkanQueue.h"
-
-struct SwapChainSupportDetails {
-	VkSurfaceCapabilitiesKHR capabilities{};
-	std::vector<VkSurfaceFormatKHR> formats;
-	std::vector<VkPresentModeKHR> presentModes;
-};
+#include "VulkanBuffer.h"
+#include "VulkanSwapChain.h"
 
 struct Vertex {
 	glm::vec2 pos;
@@ -48,8 +45,16 @@ const std::vector<uint16_t> indices = {
 	0, 1, 2, 2, 3, 0
 };
 
-class VulkanBase : public VulkanDebug, public VulkanQueue {	
+
+
+class VulkanBase {	
 protected:
+
+	VulkanDebug vulkanDebug;
+	VulkanQueue vulkanQueue;
+	VulkanBuffer vulkanBuffer;
+	VulkanSwapChain vulkanSwapChain;
+
 	GLFWwindow* window = nullptr;
 	VkInstance instance = VK_NULL_HANDLE;
 	VkDevice device = VK_NULL_HANDLE;
@@ -57,9 +62,6 @@ protected:
 	VkQueue graphicsQueue = VK_NULL_HANDLE;
 	VkQueue presentQueue = VK_NULL_HANDLE;
 	VkSurfaceKHR surface = VK_NULL_HANDLE;
-	VkSwapchainKHR swapChain = VK_NULL_HANDLE;
-	VkFormat swapChainImageFormat;
-	VkExtent2D swapChainExtent;
 	VkRenderPass renderPass;
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
@@ -72,9 +74,7 @@ protected:
 	std::vector<VkSemaphore> imageAvailableSemaphores;
 	std::vector<VkSemaphore> renderFinishedSemaphores;
 	std::vector<VkFence> inFlightFences;
-	std::vector<VkImage> swapChainImages;
-	std::vector<VkImageView> swapChainImageViews;
-	std::vector<VkFramebuffer> swapChainFramebuffers;
+
 	uint32_t currentFrame = 0;
 	bool framebufferResized = false;
 
@@ -84,27 +84,17 @@ protected:
 	void createInstance();
 	void pickPhysicalDevice();
 	void createLogicalDevice();
-	void createSwapChain();
 	void createSurface(GLFWwindow* window);
-	void createImageViews();
 	void createRenderPass();
 	void createGraphicsPipeline();
-	void createFramebuffers();
 	void createCommandPool();
 	void createCommandBuffer();
 	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 	void createSyncObjects();
 	void drawFrame();
-	void cleanupSwapChain();
-	void recreateSwapChain();
 	void createVertexBuffer();
 	void createIndexBuffer();
-	void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
-	void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
-	VkShaderModule createShaderModule(const std::vector<char>& code);
-	SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
-	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
-	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
-	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities, GLFWwindow* window);
-	uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+	void recreateSwapChain();
+	void cleanupSwapChain();
+	VkShaderModule createShaderModule(const std::vector<char>& code);	
 };

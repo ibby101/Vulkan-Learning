@@ -2,7 +2,7 @@
 #include "everything.h"
 
 class VulkanDebug {
-protected:
+public:
 	VkDebugUtilsMessengerEXT debugMessenger = VK_NULL_HANDLE;
 
 	VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,

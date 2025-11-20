@@ -138,18 +138,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="VulkanSwapChain.cpp" />
     <None Include="shader.vert">
       <FileType>Document</FileType>
     </None>
     <ClCompile Include="VulkanBase.cpp" />
+    <ClCompile Include="VulkanBuffer.cpp" />
     <ClCompile Include="VulkanDebug.cpp" />
     <ClCompile Include="VulkanQueue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="everything.h" />
+    <ClInclude Include="VulkanBuffer.h" />
     <ClInclude Include="VulkanBase.h" />
     <ClInclude Include="VulkanDebug.h" />
     <ClInclude Include="VulkanQueue.h" />
+    <ClInclude Include="VulkanSwapChain.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="frag.spv" />

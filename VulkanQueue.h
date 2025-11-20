@@ -11,6 +11,6 @@ struct QueueFamilyIndices {
 };
 
 class VulkanQueue {
-protected:
+public:
 	QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface);
 };

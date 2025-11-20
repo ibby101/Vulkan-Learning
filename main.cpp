@@ -19,15 +19,15 @@ private:
 
 	void initVulkan() {
 		createInstance();
-		setupDebugMessenger(instance);
+		vulkanDebug.setupDebugMessenger(instance);
 		createSurface(window);
 		pickPhysicalDevice();
 		createLogicalDevice();
-		createSwapChain();
-		createImageViews();
+		vulkanSwapChain.createSwapSystem(device, physicalDevice, surface, window, indices);
+		vulkanSwapChain.cleanup(device);;
 		createRenderPass();
 		createGraphicsPipeline();
-		createFramebuffers();
+		vulkanSwapChain.createFramebuffers(device, renderPass);
 		createCommandPool();
 		createVertexBuffer();
 		createIndexBuffer();
@@ -71,7 +71,7 @@ private:
 
 
 		if (enableValidationLayers) {
-			DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
+			vulkanDebug.DestroyDebugUtilsMessengerEXT(instance, vulkanDebug.debugMessenger, nullptr);
 		}
 
 		// surface and instance cleanup
@@ -113,13 +113,13 @@ private:
 
 		// checking for swap chain support only if extensions are supported
 		if (extensionsSupported) {
-			SwapChainSupportDetails swapChainSupport = querySwapChainSupport(device);
+			SwapChainSupportDetails swapChainSupport = vulkanSwapChain.querySwapChainSupport(device, surface);
 			swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
 		}
 	
 		
 		// checking if the device has the required queue families
-		QueueFamilyIndices indices = findQueueFamilies(device, surface);
+		QueueFamilyIndices indices = vulkanQueue.findQueueFamilies(device, surface);
 
 		if (!indices.isComplete() || !swapChainAdequate) {
 			return 0;
