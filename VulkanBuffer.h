@@ -1,6 +1,6 @@
 #pragma once
 
-#include "everything.h"
+#include "CommonHeaders.h"
 
 class VulkanBuffer {
 public:

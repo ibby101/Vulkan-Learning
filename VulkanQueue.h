@@ -1,5 +1,5 @@
 #pragma once
-#include "everything.h"
+#include "CommonHeaders.h"
 
 struct QueueFamilyIndices {
 	std::optional<uint32_t> graphicsFamily;
