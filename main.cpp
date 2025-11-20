@@ -23,8 +23,8 @@ private:
 		createSurface(window);
 		pickPhysicalDevice();
 		createLogicalDevice();
-		vulkanSwapChain.createSwapSystem(device, physicalDevice, surface, window, indices);
-		vulkanSwapChain.cleanup(device);;
+		QueueFamilyIndices queueFamilies = vulkanQueue.findQueueFamilies(physicalDevice, surface);
+		vulkanSwapChain.createSwapSystem(device, physicalDevice, surface, window, queueFamilies);
 		createRenderPass();
 		createGraphicsPipeline();
 		vulkanSwapChain.createFramebuffers(device, renderPass);

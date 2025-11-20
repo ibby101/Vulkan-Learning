@@ -26,9 +26,6 @@ void VulkanSwapChain::createSwapSystem(VkDevice device, VkPhysicalDevice physica
 	createInfo.imageArrayLayers = 1;
 	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-	// setting queue family sharing mode
-	QueueFamilyIndices indices = vulkanQueue.findQueueFamilies(physicalDevice, surface);
-
 	uint32_t queueFamilyIndices[] = {
 		indices.graphicsFamily.value(),
 		indices.presentFamily.value()

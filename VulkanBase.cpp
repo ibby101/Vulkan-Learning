@@ -133,11 +133,11 @@ void VulkanBase::pickPhysicalDevice() {
 // ---------------------- Logical Device Creation ----------------------
 
 void VulkanBase::createLogicalDevice() {
-	QueueFamilyIndices indices = vulkanQueue.findQueueFamilies(physicalDevice, surface);
+	QueueFamilyIndices queueFamilies = vulkanQueue.findQueueFamilies(physicalDevice, surface);
 
 	std::set<uint32_t> uniqueQueueFamilies = {
-		indices.graphicsFamily.value(),
-		indices.presentFamily.value()
+		queueFamilies.graphicsFamily.value(),
+		queueFamilies.presentFamily.value()
 	};
 	// creating queue create info structures
 	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
@@ -177,10 +177,10 @@ void VulkanBase::createLogicalDevice() {
 	}
 
 	// retrieving graphics queue handles
-	vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &graphicsQueue);
+	vkGetDeviceQueue(device, queueFamilies.graphicsFamily.value(), 0, &graphicsQueue);
 
 	// retrieving present queue handles
-	vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);
+	vkGetDeviceQueue(device, queueFamilies.presentFamily.value(), 0, &presentQueue);
 }
 
 void VulkanBase::createSurface(GLFWwindow* window) {
@@ -641,9 +641,12 @@ void VulkanBase::createIndexBuffer() {
 }
 
 void VulkanBase::recreateSwapChain() {
-	QueueFamilyIndices indices = vulkanQueue.findQueueFamilies(physicalDevice, surface);
+	QueueFamilyIndices queueFamilies = vulkanQueue.findQueueFamilies(physicalDevice, surface);
 
-	vulkanSwapChain.recreate(device, physicalDevice, surface, window, renderPass, indices);
+	vulkanSwapChain.recreate(device, physicalDevice, surface, window, renderPass, queueFamilies);
+
+	createGraphicsPipeline();
+	createCommandBuffer();
 }
 
 void VulkanBase::cleanupSwapChain() {
