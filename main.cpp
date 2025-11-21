@@ -26,12 +26,13 @@ private:
 		QueueFamilyIndices queueFamilies = vulkanQueue.findQueueFamilies(physicalDevice, surface);
 		vulkanSwapChain.createSwapSystem(device, physicalDevice, surface, window, queueFamilies);
 		createRenderPass();
-		vulkanUniformBuffer.createDescriptorSetLayout();
+		vulkanUniformBuffer.createDescriptorSetLayout(device);
 		createGraphicsPipeline();
 		vulkanSwapChain.createFramebuffers(device, renderPass);
 		createCommandPool();
 		createVertexBuffer();
 		createIndexBuffer();
+		createUniformBuffers();
 		createCommandBuffer();
 		createSyncObjects();
 	}
@@ -47,6 +48,13 @@ private:
 
 	void cleanup() {
 		cleanupSwapChain();
+
+		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i) {
+			vkDestroyBuffer(device, vulkanUniformBuffer.uniformBuffers[i], nullptr);
+			vkFreeMemory(device, vulkanUniformBuffer.uniformBuffersMemory[i], nullptr);
+		}
+
+		vkDestroyDescriptorSetLayout(device, vulkanUniformBuffer.descriptorSetLayout, nullptr);
 
 		vkDestroyBuffer(device, indexBuffer, nullptr);
 		vkFreeMemory(device, indexBufferMemory, nullptr);

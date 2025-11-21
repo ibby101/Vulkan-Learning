@@ -10,6 +10,11 @@ struct UniformBufferObject {
 
 class VulkanUniformBuffer {
 public:
+	std::vector<VkBuffer> uniformBuffers;
+	std::vector<VkDeviceMemory> uniformBuffersMemory;
+	std::vector<void*> uniformBuffersMapped;
 
-	void createDescriptorSetLayout();
+	VkDescriptorSetLayout descriptorSetLayout;
+
+	void createDescriptorSetLayout(VkDevice device);
 };

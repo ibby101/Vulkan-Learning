@@ -320,7 +320,7 @@ void VulkanBase::createGraphicsPipeline() {
 	
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 	pipelineLayoutInfo.setLayoutCount = 0;
-	pipelineLayoutInfo.pSetLayouts = nullptr;
+	pipelineLayoutInfo.pSetLayouts = &vulkanUniformBuffer.descriptorSetLayout;
 	pipelineLayoutInfo.pushConstantRangeCount = 0;
 	pipelineLayoutInfo.pPushConstantRanges = nullptr;
 
@@ -360,7 +360,6 @@ void VulkanBase::createGraphicsPipeline() {
 
 
 }
-
 
 void VulkanBase::createRenderPass() {
 	VkAttachmentDescription colorAttachment{};
@@ -638,6 +637,22 @@ void VulkanBase::createIndexBuffer() {
 
 	vkDestroyBuffer(device, stagingBuffer, nullptr);
 	vkFreeMemory(device, stagingBufferMemory, nullptr);
+}
+
+void VulkanBase::createUniformBuffers() {
+	VkDeviceSize bufferSize = sizeof(UniformBufferObject);
+
+	vulkanUniformBuffer.uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+	vulkanUniformBuffer.uniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
+	vulkanUniformBuffer.uniformBuffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
+
+	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i) {
+		vulkanBuffer.createBuffer(device, physicalDevice, bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, 
+			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 
+			vulkanUniformBuffer.uniformBuffers[i], vulkanUniformBuffer.uniformBuffersMemory[i]);
+
+		vkMapMemory(device, vulkanUniformBuffer.uniformBuffersMemory[i], 0, bufferSize, 0, &vulkanUniformBuffer.uniformBuffersMapped[i]);
+	}
 }
 
 void VulkanBase::recreateSwapChain() {

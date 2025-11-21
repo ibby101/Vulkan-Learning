@@ -55,6 +55,7 @@ protected:
 	VulkanQueue vulkanQueue;
 	VulkanBuffer vulkanBuffer;
 	VulkanSwapChain vulkanSwapChain;
+	VulkanUniformBuffer vulkanUniformBuffer;
 
 	GLFWwindow* window = nullptr;
 	VkInstance instance = VK_NULL_HANDLE;
@@ -95,6 +96,7 @@ protected:
 	void drawFrame();
 	void createVertexBuffer();
 	void createIndexBuffer();
+	void createUniformBuffers();
 	void recreateSwapChain();
 	void cleanupSwapChain();
 	VkShaderModule createShaderModule(const std::vector<char>& code);	
