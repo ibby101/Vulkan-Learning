@@ -7,3 +7,9 @@ struct UniformBufferObject {
 	glm::mat4 view;
 	glm::mat4 project;
 };
+
+class VulkanUniformBuffer {
+public:
+
+	void createDescriptorSetLayout();
+};

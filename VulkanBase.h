@@ -4,6 +4,7 @@
 #include "VulkanQueue.h"
 #include "VulkanBuffer.h"
 #include "VulkanSwapChain.h"
+#include "VulkanUniformBuffer.h"
 
 struct Vertex {
 	glm::vec2 pos;

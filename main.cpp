@@ -26,6 +26,7 @@ private:
 		QueueFamilyIndices queueFamilies = vulkanQueue.findQueueFamilies(physicalDevice, surface);
 		vulkanSwapChain.createSwapSystem(device, physicalDevice, surface, window, queueFamilies);
 		createRenderPass();
+		vulkanUniformBuffer.createDescriptorSetLayout();
 		createGraphicsPipeline();
 		vulkanSwapChain.createFramebuffers(device, renderPass);
 		createCommandPool();
