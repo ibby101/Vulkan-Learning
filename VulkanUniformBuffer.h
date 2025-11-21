@@ -17,4 +17,5 @@ public:
 	VkDescriptorSetLayout descriptorSetLayout;
 
 	void createDescriptorSetLayout(VkDevice device);
+	void updateUniformBuffer(VkDevice device, uint32_t currentImage, float time, const VkExtent2D swapChainExtent);
 };
