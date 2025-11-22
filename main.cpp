@@ -33,6 +33,8 @@ private:
 		createVertexBuffer();
 		createIndexBuffer();
 		createUniformBuffers();
+		vulkanUniformBuffer.createDescriptorPool(device);
+		vulkanUniformBuffer.createDescriptorSets(device);
 		createCommandBuffer();
 		createSyncObjects();
 	}
@@ -53,6 +55,8 @@ private:
 			vkDestroyBuffer(device, vulkanUniformBuffer.uniformBuffers[i], nullptr);
 			vkFreeMemory(device, vulkanUniformBuffer.uniformBuffersMemory[i], nullptr);
 		}
+
+		vkDestroyDescriptorPool(device, vulkanUniformBuffer.descriptorPool, nullptr);
 
 		vkDestroyDescriptorSetLayout(device, vulkanUniformBuffer.descriptorSetLayout, nullptr);
 

@@ -56,7 +56,6 @@ protected:
 	VulkanBuffer vulkanBuffer;
 	VulkanSwapChain vulkanSwapChain;
 	VulkanUniformBuffer vulkanUniformBuffer;
-
 	GLFWwindow* window = nullptr;
 	VkInstance instance = VK_NULL_HANDLE;
 	VkDevice device = VK_NULL_HANDLE;
@@ -77,6 +76,7 @@ protected:
 	std::vector<VkSemaphore> renderFinishedSemaphores;
 	std::vector<VkFence> inFlightFences;
 
+	float currentTime = (float)glfwGetTime();
 	uint32_t currentFrame = 0;
 	bool framebufferResized = false;
 

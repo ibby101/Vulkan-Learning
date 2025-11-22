@@ -15,7 +15,11 @@ public:
 	std::vector<void*> uniformBuffersMapped;
 
 	VkDescriptorSetLayout descriptorSetLayout;
+	VkDescriptorPool descriptorPool;
+	std::vector<VkDescriptorSet> descriptorSets;
 
 	void createDescriptorSetLayout(VkDevice device);
-	void updateUniformBuffer(VkDevice device, uint32_t currentImage, float time, const VkExtent2D swapChainExtent);
+	void createDescriptorPool(VkDevice device);
+	void createDescriptorSets(VkDevice device);
+	void updateUniformBuffer(VkDevice device, uint32_t currentImage, const VkExtent2D swapChainExtent);
 };

@@ -275,7 +275,7 @@ void VulkanBase::createGraphicsPipeline() {
 	rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
 	rasterizer.lineWidth = 1.0f;
 	rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
-	rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
+	rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 
 	rasterizer.depthBiasEnable = VK_FALSE;
 	rasterizer.depthBiasConstantFactor = 0.0f;
@@ -319,7 +319,7 @@ void VulkanBase::createGraphicsPipeline() {
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 	
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-	pipelineLayoutInfo.setLayoutCount = 0;
+	pipelineLayoutInfo.setLayoutCount = 1;
 	pipelineLayoutInfo.pSetLayouts = &vulkanUniformBuffer.descriptorSetLayout;
 	pipelineLayoutInfo.pushConstantRangeCount = 0;
 	pipelineLayoutInfo.pPushConstantRanges = nullptr;
@@ -492,6 +492,9 @@ void VulkanBase::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t ima
 
 	vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
+	vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1,
+		&vulkanUniformBuffer.descriptorSets[currentFrame], 0, nullptr);
+
 	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 
 	vkCmdEndRenderPass(commandBuffer);
@@ -523,7 +526,7 @@ void VulkanBase::drawFrame() {
 
 	recordCommandBuffer(commandBuffers[currentFrame], imageIndex);
 
-	vulkanUniformBuffer.updateUniformBuffer(currentFrame);
+	vulkanUniformBuffer.updateUniformBuffer(device, currentFrame, vulkanSwapChain.swapChainExtent);
 		
 	VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
