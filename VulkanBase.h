@@ -5,6 +5,7 @@
 #include "VulkanBuffer.h"
 #include "VulkanSwapChain.h"
 #include "VulkanUniformBuffer.h"
+#include "VulkanTextureMap.h"
 
 struct Vertex {
 	glm::vec2 pos;
@@ -56,6 +57,7 @@ protected:
 	VulkanBuffer vulkanBuffer;
 	VulkanSwapChain vulkanSwapChain;
 	VulkanUniformBuffer vulkanUniformBuffer;
+	VulkanTextureMap vulkanTextureMap;
 	GLFWwindow* window = nullptr;
 	VkInstance instance = VK_NULL_HANDLE;
 	VkDevice device = VK_NULL_HANDLE;
