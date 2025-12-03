@@ -30,7 +30,7 @@ private:
 		createGraphicsPipeline();
 		vulkanSwapChain.createFramebuffers(device, renderPass);
 		createCommandPool();
-		vulkanTextureMap.createTextureImage();
+		vulkanTextureMap.createTextureImage(device, physicalDevice);
 		createVertexBuffer();
 		createIndexBuffer();
 		createUniformBuffers();
