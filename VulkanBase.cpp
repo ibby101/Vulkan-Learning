@@ -413,16 +413,9 @@ void VulkanBase::createRenderPass() {
 void VulkanBase::createCommandPool() {
 	QueueFamilyIndices queueFamilyIndices = vulkanQueue.findQueueFamilies(physicalDevice, surface);
 
-	VkCommandPoolCreateInfo poolInfo{};
-
-	poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-	poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-	poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
-
-	if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
-		throw std::runtime_error("failed to create command pool.");
-	}
+	vulkanBuffer.createCommandPool(device, queueFamilyIndices);
 }
+
 
 void VulkanBase::createCommandBuffer() {
 	commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
@@ -430,7 +423,7 @@ void VulkanBase::createCommandBuffer() {
 	VkCommandBufferAllocateInfo allocInfo{};
 
 	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-	allocInfo.commandPool = commandPool;
+	allocInfo.commandPool = vulkanBuffer.commandPool;
 	allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 	allocInfo.commandBufferCount = (uint32_t) commandBuffers.size();
 
@@ -467,11 +460,11 @@ void VulkanBase::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t ima
 
 	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
-	VkBuffer vertexBuffers[] = { vertexBuffer };
+	VkBuffer vertexBuffers[] = { vulkanBuffer.vertexBuffer };
 	VkDeviceSize offsets[] = { 0 };
 	vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
-	vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT16);
+	vkCmdBindIndexBuffer(commandBuffer, vulkanBuffer.indexBuffer, 0, VK_INDEX_TYPE_UINT16);
 
 	// viewport and scissor will be set dynamically
 	VkViewport viewport{};
@@ -598,50 +591,27 @@ void VulkanBase::createSyncObjects() {
 }
 
 void VulkanBase::createVertexBuffer() {
-	VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();	
-
-	VkBuffer stagingBuffer;
-	VkDeviceMemory stagingBufferMemory;
-
-	vulkanBuffer.createBuffer(device, physicalDevice, bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
-
-	void* data;
-	vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
-	memcpy(data, vertices.data(), (size_t)bufferSize);
-	vkUnmapMemory(device, stagingBufferMemory);
-
-	vulkanBuffer.createBuffer(device, physicalDevice, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
-		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
-
-	vulkanBuffer.copyBuffer(device, commandPool, graphicsQueue, stagingBuffer, vertexBuffer, bufferSize);
-
-	vkDestroyBuffer(device, stagingBuffer, nullptr);
-	vkFreeMemory(device, stagingBufferMemory, nullptr);
+	vulkanBuffer.createVertexBuffer(device, physicalDevice, graphicsQueue, vertices);
 }
 
 void VulkanBase::createIndexBuffer() {
-	VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
+	vulkanBuffer.createIndexBuffer(device, physicalDevice, graphicsQueue, indices);
+}
 
-	VkBuffer stagingBuffer;
-	VkDeviceMemory stagingBufferMemory;
+void VulkanBase::createTextureImage() {
+	vulkanTextureMap.createTextureImage(device, physicalDevice);
+}
 
-	vulkanBuffer.createBuffer(device, physicalDevice, bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-		stagingBuffer, stagingBufferMemory);
+void VulkanBase::createFrameBuffers() {
+	vulkanSwapChain.createFramebuffers(device, renderPass);
+}
 
-	void* data;
-	vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
-	memcpy(data, indices.data(), (size_t)bufferSize);
-	vkUnmapMemory(device, stagingBufferMemory);
+void VulkanBase::createDescriptorSetLayout() {
+	vulkanUniformBuffer.createDescriptorSetLayout(device);
+}
 
-	vulkanBuffer.createBuffer(device, physicalDevice, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
-		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
-
-	vulkanBuffer.copyBuffer(device, commandPool, graphicsQueue, stagingBuffer, indexBuffer, bufferSize);
-
-	vkDestroyBuffer(device, stagingBuffer, nullptr);
-	vkFreeMemory(device, stagingBufferMemory, nullptr);
+void VulkanBase::createSwapSystem() {
+	vulkanSwapChain.createSwapSystem(device, physicalDevice, surface, window, queueFamilies);
 }
 
 void VulkanBase::createUniformBuffers() {
@@ -660,6 +630,12 @@ void VulkanBase::createUniformBuffers() {
 	}
 }
 
+void VulkanBase::createDescriptorComponents() {
+	vulkanUniformBuffer.createDescriptorPool(device);
+	vulkanUniformBuffer.createDescriptorSets(device);
+}
+
+
 void VulkanBase::recreateSwapChain() {
 	QueueFamilyIndices queueFamilies = vulkanQueue.findQueueFamilies(physicalDevice, surface);
 
@@ -671,6 +647,14 @@ void VulkanBase::recreateSwapChain() {
 
 void VulkanBase::cleanupSwapChain() {
 	vulkanSwapChain.cleanup(device);
+}
+
+void VulkanBase::cleanupBuffers() {
+	vulkanBuffer.cleanup(device);
+}
+
+void VulkanBase::cleanupUniformBuffers() {
+	vulkanUniformBuffer.cleanup(device);
 }
 
 

@@ -1,5 +1,10 @@
 #include "VulkanTextureMap.h"
 
+
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
+
 void VulkanTextureMap::createImage(VkDevice device, VkPhysicalDevice physicalDevice, uint32_t width, uint32_t height,
 	VkFormat format, VkImageTiling tiling,
 	VkImageUsageFlags usage, VkMemoryPropertyFlags properties,
@@ -42,8 +47,6 @@ void VulkanTextureMap::createImage(VkDevice device, VkPhysicalDevice physicalDev
 
 }
 
-
-
 void VulkanTextureMap::createTextureImage(VkDevice device, VkPhysicalDevice physicalDevice) {
 	int texWidth, texHeight, texChannels;
 	stbi_uc* pixels = stbi_load(
@@ -82,7 +85,4 @@ void VulkanTextureMap::createTextureImage(VkDevice device, VkPhysicalDevice phys
 		VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL,
 		VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
 		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, textureImage, textureImageMemory);
-
-
-
 }

@@ -23,19 +23,17 @@ private:
 		createSurface(window);
 		pickPhysicalDevice();
 		createLogicalDevice();
-		QueueFamilyIndices queueFamilies = vulkanQueue.findQueueFamilies(physicalDevice, surface);
-		vulkanSwapChain.createSwapSystem(device, physicalDevice, surface, window, queueFamilies);
+		createSwapSystem();
 		createRenderPass();
-		vulkanUniformBuffer.createDescriptorSetLayout(device);
+		createDescriptorSetLayout();
 		createGraphicsPipeline();
-		vulkanSwapChain.createFramebuffers(device, renderPass);
+		createFrameBuffers();
 		createCommandPool();
-		vulkanTextureMap.createTextureImage(device, physicalDevice);
+		createTextureImage();
 		createVertexBuffer();
 		createIndexBuffer();
 		createUniformBuffers();
-		vulkanUniformBuffer.createDescriptorPool(device);
-		vulkanUniformBuffer.createDescriptorSets(device);
+		createDescriptorComponents();
 		createCommandBuffer();
 		createSyncObjects();
 	}
@@ -51,22 +49,9 @@ private:
 
 	void cleanup() {
 		cleanupSwapChain();
+		cleanupUniformBuffers();
+		cleanupBuffers();
 
-		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i) {
-			vkDestroyBuffer(device, vulkanUniformBuffer.uniformBuffers[i], nullptr);
-			vkFreeMemory(device, vulkanUniformBuffer.uniformBuffersMemory[i], nullptr);
-		}
-
-		vkDestroyDescriptorPool(device, vulkanUniformBuffer.descriptorPool, nullptr);
-
-		vkDestroyDescriptorSetLayout(device, vulkanUniformBuffer.descriptorSetLayout, nullptr);
-
-		vkDestroyBuffer(device, indexBuffer, nullptr);
-		vkFreeMemory(device, indexBufferMemory, nullptr);
-
-		vkDestroyBuffer(device, vertexBuffer, nullptr);
-		vkFreeMemory(device, vertexBufferMemory, nullptr);
-		
 		vkDestroyPipeline(device, graphicsPipeline, nullptr);
 		vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
 
@@ -78,8 +63,6 @@ private:
 			vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
 			vkDestroyFence(device, inFlightFences[i], nullptr);
 		}
-
-		vkDestroyCommandPool(device, commandPool, nullptr);
 
 		vkDestroyDevice(device, nullptr);
 
