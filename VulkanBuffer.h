@@ -17,14 +17,15 @@ public:
 	void createBuffer(VkDevice device, VkPhysicalDevice physicalDevice, VkDeviceSize size, VkBufferUsageFlags usage,
 		VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 
-	void createCommandPool(VkDevice device, QueueFamilyIndices indices);
+	void createCommandPool(VkDevice device, const QueueFamilyIndices& indices);
 
 	void createVertexBuffer(VkDevice device, VkPhysicalDevice physicalDevice, VkQueue submitQueue, const std::vector<Vertex> vertices);
 
 	void createIndexBuffer(VkDevice device, VkPhysicalDevice physicalDevice, VkQueue submitQueue, const std::vector<uint16_t> indices);
 
 	// Helper to copy data from one buffer to another using a command buffer
-	void copyBuffer(VkDevice device, VkCommandPool commandPool, VkQueue graphicsQueue, VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+	void copyBuffer(VkDevice device, VkQueue graphicsQueue,
+		VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 
 	void copyBufferToImage(VkDevice device, VkQueue graphicsQueue, VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
 

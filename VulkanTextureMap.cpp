@@ -1,5 +1,9 @@
 #include "VulkanTextureMap.h"
 
+VulkanTextureMap::VulkanTextureMap(VulkanBuffer& buffer)
+	: vulkanBuffer(buffer)
+{}
+
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -47,7 +51,7 @@ void VulkanTextureMap::createImage(VkDevice device, VkPhysicalDevice physicalDev
 
 }
 
-void VulkanTextureMap::createTextureImage(VkDevice device, VkPhysicalDevice physicalDevice) {
+void VulkanTextureMap::createTextureImage(VkDevice device, VkQueue submitQueue, VkPhysicalDevice physicalDevice) {
 	int texWidth, texHeight, texChannels;
 	stbi_uc* pixels = stbi_load(
 		"textures/texture.jpg",
@@ -77,12 +81,54 @@ void VulkanTextureMap::createTextureImage(VkDevice device, VkPhysicalDevice phys
 
 	stbi_image_free(pixels);
 
-	VkImage textureImage;
-	VkDeviceMemory textureImageMemory;
-
 	createImage(
 		device, physicalDevice, texWidth, texHeight,
 		VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL,
 		VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
 		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, textureImage, textureImageMemory);
+
+	vulkanBuffer.transitionImageLayout(device, submitQueue, textureImage,
+		VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+
+	vulkanBuffer.copyBufferToImage(device, submitQueue, stagingBuffer,
+		textureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
+
+	vulkanBuffer.transitionImageLayout(device, submitQueue, textureImage,
+		VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+
+	vkDestroyBuffer(device, stagingBuffer, nullptr);
+	vkFreeMemory(device, stagingBufferMemory, nullptr);
+}
+
+VkImageView VulkanTextureMap::createImageView(VkDevice device, VkImage image, VkFormat format) {
+	VkImageViewCreateInfo viewInfo{};
+	viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+	viewInfo.image = image;
+	viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+	viewInfo.format = format;
+
+	viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+	viewInfo.subresourceRange.baseMipLevel = 0;
+	viewInfo.subresourceRange.levelCount = 1;
+	viewInfo.subresourceRange.baseArrayLayer = 0;
+	viewInfo.subresourceRange.layerCount = 1;
+
+	VkImageView imageView;
+	if (vkCreateImageView(device, &viewInfo, nullptr, &imageView) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create image texture view.");
+	}
+
+	return imageView;
+}
+
+void VulkanTextureMap::createTextureImageView(VkDevice device) {
+	textureImageView = createImageView(device, textureImage, VK_FORMAT_R8G8B8A8_SRGB);
+}
+
+void VulkanTextureMap::cleanup(VkDevice device) {
+
+	vkDestroyImageView(device, textureImageView, nullptr);
+
+	vkDestroyImage(device, textureImage, nullptr);
+	vkFreeMemory(device, textureImageMemory, nullptr);
 }

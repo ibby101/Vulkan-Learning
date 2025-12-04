@@ -45,7 +45,7 @@ void VulkanBuffer::createBuffer(VkDevice device, VkPhysicalDevice physicalDevice
 	vkBindBufferMemory(device, buffer, bufferMemory, 0);
 }
 
-void VulkanBuffer::createCommandPool(VkDevice device, QueueFamilyIndices indices) {
+void VulkanBuffer::createCommandPool(VkDevice device, const QueueFamilyIndices& indices) {
 
 	VkCommandPoolCreateInfo poolInfo{};
 
@@ -58,7 +58,7 @@ void VulkanBuffer::createCommandPool(VkDevice device, QueueFamilyIndices indices
 	}
 }
 
-void VulkanBuffer::createVertexBuffer(VkDevice device, VkPhysicalDevice physicalDevice, VkQueue submitQueue, const std::vector<Vertex> vertices) {
+void VulkanBuffer::createVertexBuffer(VkDevice device, VkPhysicalDevice physicalDevice, VkQueue graphicsQueue, const std::vector<Vertex> vertices) {
 	VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
 
 	VkBuffer stagingBuffer;
@@ -75,13 +75,13 @@ void VulkanBuffer::createVertexBuffer(VkDevice device, VkPhysicalDevice physical
 	createBuffer(device, physicalDevice, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
 		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
 
-	copyBuffer(device, commandPool, submitQueue, stagingBuffer, vertexBuffer, bufferSize);
+	copyBuffer(device, graphicsQueue, stagingBuffer, vertexBuffer, bufferSize);
 
 	vkDestroyBuffer(device, stagingBuffer, nullptr);
 	vkFreeMemory(device, stagingBufferMemory, nullptr);
 }
 
-void VulkanBuffer::createIndexBuffer(VkDevice device, VkPhysicalDevice physicalDevice, VkQueue submitInfo, const std::vector<uint16_t> indices) {
+void VulkanBuffer::createIndexBuffer(VkDevice device, VkPhysicalDevice physicalDevice, VkQueue graphicsQueue, const std::vector<uint16_t> indices) {
 	VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
 
 	VkBuffer stagingBuffer;
@@ -99,7 +99,7 @@ void VulkanBuffer::createIndexBuffer(VkDevice device, VkPhysicalDevice physicalD
 	createBuffer(device, physicalDevice, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
 		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
 
-	copyBuffer(device, commandPool, submitInfo, stagingBuffer, indexBuffer, bufferSize);
+	copyBuffer(device, graphicsQueue, stagingBuffer, indexBuffer, bufferSize);
 
 	vkDestroyBuffer(device, stagingBuffer, nullptr);
 	vkFreeMemory(device, stagingBufferMemory, nullptr);
@@ -126,7 +126,7 @@ VkCommandBuffer VulkanBuffer::beginSingleTimeCommands(VkDevice device) {
 	return commandBuffer;
 }
 
-void VulkanBuffer::endSingleTimeCommands(VkDevice device, VkQueue submitQueue, VkCommandBuffer commandBuffer) {
+void VulkanBuffer::endSingleTimeCommands(VkDevice device, VkQueue graphicsQueue, VkCommandBuffer commandBuffer) {
 	vkEndCommandBuffer(commandBuffer);
 
 	VkSubmitInfo submitInfo{};
@@ -134,8 +134,8 @@ void VulkanBuffer::endSingleTimeCommands(VkDevice device, VkQueue submitQueue, V
 	submitInfo.commandBufferCount = 1;
 	submitInfo.pCommandBuffers = &commandBuffer;
 
-	vkQueueSubmit(submitQueue, 1, &submitInfo, VK_NULL_HANDLE);
-	vkQueueWaitIdle(submitQueue);
+	vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+	vkQueueWaitIdle(graphicsQueue);
 
 	vkFreeCommandBuffers(device, commandPool, 1, &commandBuffer);
 }
@@ -164,20 +164,41 @@ void VulkanBuffer::transitionImageLayout(VkDevice device, VkQueue submitQueue,
 	barrier.srcAccessMask = 0;
 	barrier.dstAccessMask = 0;
 
+	VkPipelineStageFlags sourceStage;
+	VkPipelineStageFlags destinationStage;
+
+	if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
+		barrier.srcAccessMask = 0;
+		barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+		
+		sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+		destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+	}
+	else if (oldLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL && newLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) {
+		barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
+		barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
+
+		sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+		destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+	}
+	else {
+		throw std::invalid_argument("unsupported layout transition.");
+	}
+
 	vkCmdPipelineBarrier(
 		commandBuffer,
-		0, 0,
+		sourceStage, destinationStage,
 		0,
 		0, nullptr, // memory barrier not in use
 		0, nullptr, // buffer memory barrier not in use
 		1, &barrier // image memory barrier in use!
-		);
+	);
 
 	endSingleTimeCommands(device, submitQueue, commandBuffer);
 }
 
-void VulkanBuffer::copyBuffer(VkDevice device, VkCommandPool commandPool,
-	VkQueue graphicsQueue, VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
+void VulkanBuffer::copyBuffer(VkDevice device, VkQueue graphicsQueue,
+	VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
 
 	VkCommandBuffer commandBuffer = beginSingleTimeCommands(device);
 	

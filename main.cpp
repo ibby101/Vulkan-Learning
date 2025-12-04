@@ -19,16 +19,17 @@ private:
 
 	void initVulkan() {
 		createInstance();
-		vulkanDebug.setupDebugMessenger(instance);
+		setupDebugMessenger();
 		createSurface(window);
 		pickPhysicalDevice();
+		queueFamilies = vulkanQueue.findQueueFamilies(physicalDevice, surface);
 		createLogicalDevice();
 		createSwapSystem();
 		createRenderPass();
 		createDescriptorSetLayout();
 		createGraphicsPipeline();
 		createFrameBuffers();
-		createCommandPool();
+		createCommandPool(queueFamilies);
 		createTextureImage();
 		createVertexBuffer();
 		createIndexBuffer();
@@ -49,6 +50,7 @@ private:
 
 	void cleanup() {
 		cleanupSwapChain();
+		cleanupTextureMapping();
 		cleanupUniformBuffers();
 		cleanupBuffers();
 

@@ -155,7 +155,6 @@
     <ClInclude Include="CommonHeaders.h" />
     <ClInclude Include="VulkanBuffer.h" />
     <ClInclude Include="VulkanBase.h" />
-    <ClInclude Include="VulkanDataTypes.h" />
     <ClInclude Include="VulkanDebug.h" />
     <ClInclude Include="VulkanQueue.h" />
     <ClInclude Include="VulkanSwapChain.h" />

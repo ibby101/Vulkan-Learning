@@ -1,16 +1,26 @@
+#pragma once
+
 #include "CommonHeaders.h"
 #include "VulkanBuffer.h"
 
 class VulkanTextureMap {
 public:
-	VulkanBuffer vulkanBuffer;
+	VulkanTextureMap(VulkanBuffer& buffer);
 
 	void createImage(VkDevice device, VkPhysicalDevice physicalDevice, uint32_t width,
 		uint32_t height, VkFormat format, VkImageTiling tiling,
 		VkImageUsageFlags usage, VkMemoryPropertyFlags properties,
 		VkImage& image, VkDeviceMemory& imageMemory);
 
-	void createTextureImage(VkDevice device, VkPhysicalDevice physicalDevice);
+	void createTextureImage(VkDevice device, VkQueue submitQueue, VkPhysicalDevice physicalDevice);
+	VkImageView createImageView(VkDevice device, VkImage image, VkFormat format);
+	void createTextureImageView(VkDevice device);
 
-	
+	void cleanup(VkDevice device);
+
+private:
+	VulkanBuffer& vulkanBuffer;
+	VkImage textureImage;
+	VkDeviceMemory textureImageMemory;
+	VkImageView textureImageView;
 };

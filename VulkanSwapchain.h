@@ -2,6 +2,11 @@
 
 #include "CommonHeaders.h"
 #include "VulkanQueue.h"
+#include "VulkanTextureMap.h"
+
+// forward declaration of VulkanTextureMap
+
+
 
 struct SwapChainSupportDetails {
 	VkSurfaceCapabilitiesKHR capabilities{};
@@ -12,6 +17,9 @@ struct SwapChainSupportDetails {
 class VulkanSwapChain {
 public:
 	VulkanQueue vulkanQueue;
+	VulkanTextureMap& vulkanTMap;
+
+	VulkanSwapChain(VulkanTextureMap& tMap) : vulkanTMap(tMap) {}
 
 	VkSwapchainKHR swapChain = VK_NULL_HANDLE;
 	std::vector<VkImage> swapChainImages;
@@ -22,6 +30,7 @@ public:
 
 	void createSwapSystem(VkDevice device, VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, GLFWwindow* window, QueueFamilyIndices indices);
 	void createFramebuffers(VkDevice device, VkRenderPass renderPass);
+	void createImageViews(VkDevice device);
 	void recreate(VkDevice device, VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, GLFWwindow* window, VkRenderPass renderPass, QueueFamilyIndices indices);
 	void cleanup(VkDevice device);
 
@@ -31,6 +40,5 @@ private:
 	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
 	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities, GLFWwindow* window);
-	void createImageViews(VkDevice device);
 };
 

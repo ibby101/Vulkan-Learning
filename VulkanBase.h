@@ -23,12 +23,20 @@ const std::vector<uint16_t> indices = {
 class VulkanBase {	
 protected:
 
+	VulkanBase()
+		: vulkanTextureMap(vulkanBuffer),
+		vulkanSwapChain(vulkanTextureMap)  
+	{}
+
+	virtual ~VulkanBase() = default;
+
 	VulkanDebug vulkanDebug;
 	VulkanQueue vulkanQueue;
 	VulkanBuffer vulkanBuffer;
+	VulkanTextureMap vulkanTextureMap;
 	VulkanSwapChain vulkanSwapChain;
 	VulkanUniformBuffer vulkanUniformBuffer;
-	VulkanTextureMap vulkanTextureMap;
+	
 	GLFWwindow* window = nullptr;
 	VkInstance instance = VK_NULL_HANDLE;
 	VkDevice device = VK_NULL_HANDLE;
@@ -44,7 +52,7 @@ protected:
 	std::vector<VkSemaphore> renderFinishedSemaphores;
 	std::vector<VkFence> inFlightFences;
 
-	QueueFamilyIndices queueFamilies = vulkanQueue.findQueueFamilies(physicalDevice, surface);
+	QueueFamilyIndices queueFamilies;
 	float currentTime = (float)glfwGetTime();
 	uint32_t currentFrame = 0;
 	bool framebufferResized = false;
@@ -52,13 +60,14 @@ protected:
 	virtual int rateDeviceSuitability(VkPhysicalDevice device) = 0;
 	bool isDeviceSuitable(VkPhysicalDevice device);
 	bool checkDeviceExtensionSupport(VkPhysicalDevice device);
+	void setupDebugMessenger();
 	void createInstance();
 	void pickPhysicalDevice();
 	void createLogicalDevice();
 	void createSurface(GLFWwindow* window);
 	void createRenderPass();
 	void createGraphicsPipeline();
-	void createCommandPool();
+	void createCommandPool(const QueueFamilyIndices& queueFamilies);
 	void createVertexBuffer();
 	void createIndexBuffer();
 	void createCommandBuffer();
@@ -75,5 +84,6 @@ protected:
 	void cleanupSwapChain();
 	void cleanupBuffers();
 	void cleanupUniformBuffers();
+	void cleanupTextureMapping();
 	VkShaderModule createShaderModule(const std::vector<char>& code);	
 };

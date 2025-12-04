@@ -1,6 +1,9 @@
 #include "VulkanBase.h"
 
- 
+void VulkanBase::setupDebugMessenger() {
+	vulkanDebug.setupDebugMessenger(instance);
+}
+
 bool VulkanBase::isDeviceSuitable(VkPhysicalDevice device) {
 	return rateDeviceSuitability(device) > 0;
 }
@@ -133,8 +136,6 @@ void VulkanBase::pickPhysicalDevice() {
 // ---------------------- Logical Device Creation ----------------------
 
 void VulkanBase::createLogicalDevice() {
-	QueueFamilyIndices queueFamilies = vulkanQueue.findQueueFamilies(physicalDevice, surface);
-
 	std::set<uint32_t> uniqueQueueFamilies = {
 		queueFamilies.graphicsFamily.value(),
 		queueFamilies.presentFamily.value()
@@ -410,12 +411,9 @@ void VulkanBase::createRenderPass() {
 	}
 }
 
-void VulkanBase::createCommandPool() {
-	QueueFamilyIndices queueFamilyIndices = vulkanQueue.findQueueFamilies(physicalDevice, surface);
-
-	vulkanBuffer.createCommandPool(device, queueFamilyIndices);
+void VulkanBase::createCommandPool(const QueueFamilyIndices& queueFamilies) {
+	vulkanBuffer.createCommandPool(device, queueFamilies);
 }
-
 
 void VulkanBase::createCommandBuffer() {
 	commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
@@ -599,7 +597,7 @@ void VulkanBase::createIndexBuffer() {
 }
 
 void VulkanBase::createTextureImage() {
-	vulkanTextureMap.createTextureImage(device, physicalDevice);
+	vulkanTextureMap.createTextureImage(device, graphicsQueue, physicalDevice);
 }
 
 void VulkanBase::createFrameBuffers() {
@@ -635,7 +633,6 @@ void VulkanBase::createDescriptorComponents() {
 	vulkanUniformBuffer.createDescriptorSets(device);
 }
 
-
 void VulkanBase::recreateSwapChain() {
 	QueueFamilyIndices queueFamilies = vulkanQueue.findQueueFamilies(physicalDevice, surface);
 
@@ -655,6 +652,10 @@ void VulkanBase::cleanupBuffers() {
 
 void VulkanBase::cleanupUniformBuffers() {
 	vulkanUniformBuffer.cleanup(device);
+}
+
+void VulkanBase::cleanupTextureMapping() {
+	vulkanTextureMap.cleanup(device);
 }
 
 
