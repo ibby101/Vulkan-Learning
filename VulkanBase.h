@@ -25,7 +25,8 @@ protected:
 
 	VulkanBase()
 		: vulkanTextureMap(vulkanBuffer),
-		vulkanSwapChain(vulkanTextureMap)  
+		vulkanSwapChain(vulkanTextureMap),
+		vulkanUniformBuffer(vulkanBuffer)
 	{}
 
 	virtual ~VulkanBase() = default;
@@ -48,9 +49,11 @@ protected:
 	VkPipelineLayout pipelineLayout;
 	VkPipeline graphicsPipeline;
 	std::vector<VkCommandBuffer> commandBuffers;
+
 	std::vector<VkSemaphore> imageAvailableSemaphores;
 	std::vector<VkSemaphore> renderFinishedSemaphores;
 	std::vector<VkFence> inFlightFences;
+	std::vector<VkFence> imagesInFlight;
 
 	QueueFamilyIndices queueFamilies;
 	float currentTime = (float)glfwGetTime();

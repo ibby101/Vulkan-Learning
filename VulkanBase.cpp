@@ -510,6 +510,14 @@ void VulkanBase::drawFrame() {
 		throw std::runtime_error("failed to acquire swap chain image.");
 	}
 
+	// wait if image is still being presented
+	if (imagesInFlight[imageIndex] != VK_NULL_HANDLE) {
+		vkWaitForFences(device, 1, &imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);
+	}
+
+	// mark image as now being in use by current frame.
+	imagesInFlight[imageIndex] = inFlightFences[currentFrame];
+
 	// reset the fence to unsignaled state if we are submitting work
 	vkResetFences(device, 1, &inFlightFences[currentFrame]);
 
@@ -571,6 +579,7 @@ void VulkanBase::createSyncObjects() {
 	imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
 	renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
 	inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
+	imagesInFlight.resize(vulkanSwapChain.swapChainImages.size(), VK_NULL_HANDLE);
 
 	VkSemaphoreCreateInfo semaphoreInfo{};
 	semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -621,19 +630,7 @@ void VulkanBase::createSwapSystem() {
 }
 
 void VulkanBase::createUniformBuffers() {
-	VkDeviceSize bufferSize = sizeof(UniformBufferObject);
-
-	vulkanUniformBuffer.uniformBuffers.resize(MAX_FRAMES_IN_FLIGHT);
-	vulkanUniformBuffer.uniformBuffersMemory.resize(MAX_FRAMES_IN_FLIGHT);
-	vulkanUniformBuffer.uniformBuffersMapped.resize(MAX_FRAMES_IN_FLIGHT);
-
-	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i) {
-		vulkanBuffer.createBuffer(device, physicalDevice, bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, 
-			VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, 
-			vulkanUniformBuffer.uniformBuffers[i], vulkanUniformBuffer.uniformBuffersMemory[i]);
-
-		vkMapMemory(device, vulkanUniformBuffer.uniformBuffersMemory[i], 0, bufferSize, 0, &vulkanUniformBuffer.uniformBuffersMapped[i]);
-	}
+	vulkanUniformBuffer.createUniformBuffer(device, physicalDevice);
 }
 
 void VulkanBase::createDescriptorComponents() {
@@ -645,6 +642,8 @@ void VulkanBase::recreateSwapChain() {
 	QueueFamilyIndices queueFamilies = vulkanQueue.findQueueFamilies(physicalDevice, surface);
 
 	vulkanSwapChain.recreate(device, physicalDevice, surface, window, renderPass, queueFamilies);
+
+	imagesInFlight.resize(vulkanSwapChain.swapChainImages.size(), VK_NULL_HANDLE);
 
 	createGraphicsPipeline();
 	createCommandBuffer();
