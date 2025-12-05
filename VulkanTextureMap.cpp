@@ -159,6 +159,7 @@ void VulkanTextureMap::createTextureSampler(VkDevice device, VkPhysicalDevice ph
 
 void VulkanTextureMap::cleanup(VkDevice device) {
 
+	vkDestroySampler(device, textureSampler, nullptr);
 	vkDestroyImageView(device, textureImageView, nullptr);
 
 	vkDestroyImage(device, textureImage, nullptr);
