@@ -31,6 +31,8 @@ private:
 		createFrameBuffers();
 		createCommandPool(queueFamilies);
 		createTextureImage();
+		createTextureImageView();
+		createTextureSampler();
 		createVertexBuffer();
 		createIndexBuffer();
 		createUniformBuffers();

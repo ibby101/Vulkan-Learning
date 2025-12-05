@@ -600,6 +600,14 @@ void VulkanBase::createTextureImage() {
 	vulkanTextureMap.createTextureImage(device, graphicsQueue, physicalDevice);
 }
 
+void VulkanBase::createTextureImageView() {
+	vulkanTextureMap.createTextureImageView(device);
+}
+
+void VulkanBase::createTextureSampler() {
+	vulkanTextureMap.createTextureSampler(device, physicalDevice);
+}
+
 void VulkanBase::createFrameBuffers() {
 	vulkanSwapChain.createFramebuffers(device, renderPass);
 }

@@ -75,6 +75,8 @@ protected:
 	void createDescriptorSetLayout();
 	void createSwapSystem();
 	void createTextureImage();
+	void createTextureImageView();
+	void createTextureSampler();
 	void createDescriptorComponents();
 	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 	void createSyncObjects();
