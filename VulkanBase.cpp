@@ -155,6 +155,8 @@ void VulkanBase::createLogicalDevice() {
 
 	VkPhysicalDeviceFeatures deviceFeatures{};
 
+	deviceFeatures.samplerAnisotropy = VK_TRUE;
+
 	VkDeviceCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 
@@ -540,7 +542,7 @@ void VulkanBase::drawFrame() {
 	submitInfo.commandBufferCount = 1;
 	submitInfo.pCommandBuffers = &commandBuffers[currentFrame];
 
-	VkSemaphore signalSemaphores[] = { renderFinishedSemaphores[currentFrame] };
+	VkSemaphore signalSemaphores[] = { renderFinishedSemaphores[imageIndex] };
 	submitInfo.signalSemaphoreCount = 1;
 	submitInfo.pSignalSemaphores = signalSemaphores;
 
@@ -577,8 +579,9 @@ void VulkanBase::drawFrame() {
 
 void VulkanBase::createSyncObjects() {
 	imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
-	renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
 	inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
+
+	renderFinishedSemaphores.resize(vulkanSwapChain.swapChainImages.size());
 	imagesInFlight.resize(vulkanSwapChain.swapChainImages.size(), VK_NULL_HANDLE);
 
 	VkSemaphoreCreateInfo semaphoreInfo{};
@@ -590,9 +593,14 @@ void VulkanBase::createSyncObjects() {
 
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i) {
 		if (vkCreateFence(device, &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS ||
-			vkCreateSemaphore(device, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) != VK_SUCCESS ||
-			vkCreateSemaphore(device, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) != VK_SUCCESS) {
+			vkCreateSemaphore(device, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create synchronisation objects for a frame.");
+		}
+	}
+
+	for (size_t i = 0; i < vulkanSwapChain.swapChainImages.size(); ++i) {
+		if (vkCreateSemaphore(device, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) != VK_SUCCESS) {
+			throw std::runtime_error("failed to create render finished semaphore for image.");
 		}
 	}
 }
@@ -643,7 +651,15 @@ void VulkanBase::recreateSwapChain() {
 
 	vulkanSwapChain.recreate(device, physicalDevice, surface, window, renderPass, queueFamilies);
 
-	imagesInFlight.resize(vulkanSwapChain.swapChainImages.size(), VK_NULL_HANDLE);
+	renderFinishedSemaphores.resize(vulkanSwapChain.swapChainImages.size());
+	VkSemaphoreCreateInfo semaphoreInfo{};
+	semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+	for (size_t i = 0; i < vulkanSwapChain.swapChainImages.size(); ++i) {
+		if (vkCreateSemaphore(device, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) != VK_SUCCESS) {
+			throw std::runtime_error("failed to create render finished semaphore for image.");
+		}
+	}
 
 	createGraphicsPipeline();
 	createCommandBuffer();

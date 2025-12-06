@@ -1,13 +1,19 @@
 #pragma once
 #include "CommonHeaders.h"
 #include "VulkanBuffer.h"
+#include "VulkanTextureMap.h"
 
 class VulkanUniformBuffer {
 public:
 
 	VulkanBuffer& vulkanBuffer;
+	VulkanTextureMap& vulkanTMap;
 
-	VulkanUniformBuffer(VulkanBuffer& vulkanBuffer) : vulkanBuffer(vulkanBuffer) {}
+
+
+	VulkanUniformBuffer(VulkanBuffer& vulkanBuffer, VulkanTextureMap& vulkanTMap)
+		: vulkanBuffer(vulkanBuffer), vulkanTMap(vulkanTMap) 
+	{}
 
 	std::vector<VkBuffer> uniformBuffers;
 	std::vector<VkDeviceMemory> uniformBuffersMemory;

@@ -64,8 +64,11 @@ private:
 
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i) {
 			vkDestroySemaphore(device, imageAvailableSemaphores[i], nullptr);
-			vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
 			vkDestroyFence(device, inFlightFences[i], nullptr);
+		}
+
+		for (size_t i = 0; i < vulkanSwapChain.swapChainImages.size(); ++i) {
+			vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
 		}
 
 		vkDestroyDevice(device, nullptr);
@@ -122,10 +125,9 @@ private:
 		// checking if the device has the required queue families
 		QueueFamilyIndices indices = vulkanQueue.findQueueFamilies(device, surface);
 
-		if (!indices.isComplete() || !swapChainAdequate) {
+		if (!indices.isComplete() || !swapChainAdequate || !extensionsSupported || !deviceFeatures.samplerAnisotropy) {
 			return 0;
 		}
-
 		return score;
 	}
 };

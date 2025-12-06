@@ -5,6 +5,11 @@
 
 class VulkanTextureMap {
 public:
+	VkImage textureImage;
+	VkDeviceMemory textureImageMemory;
+	VkImageView textureImageView;
+	VkSampler textureSampler;
+
 	VulkanTextureMap(VulkanBuffer& buffer);
 
 	void createImage(VkDevice device, VkPhysicalDevice physicalDevice, uint32_t width,
@@ -21,8 +26,4 @@ public:
 
 private:
 	VulkanBuffer& vulkanBuffer;
-	VkImage textureImage;
-	VkDeviceMemory textureImageMemory;
-	VkImageView textureImageView;
-	VkSampler textureSampler;
 };
