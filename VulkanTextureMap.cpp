@@ -54,7 +54,7 @@ void VulkanTextureMap::createImage(VkDevice device, VkPhysicalDevice physicalDev
 void VulkanTextureMap::createTextureImage(VkDevice device, VkQueue submitQueue, VkPhysicalDevice physicalDevice) {
 	int texWidth, texHeight, texChannels;
 	stbi_uc* pixels = stbi_load(
-		"textures/texture.jpg",
+		"textures/checked.jpg",
 		&texWidth,
 		&texHeight,
 		&texChannels,

@@ -12,7 +12,7 @@ private:
 	void initWindow() {
 		glfwInit();
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-		window = glfwCreateWindow(WIDTH, HEIGHT, "Hmm, Yeess", nullptr, nullptr);
+		window = glfwCreateWindow(WIDTH, HEIGHT, "Chequerboard!!!", nullptr, nullptr);
 		glfwSetWindowUserPointer(window, this);
 		glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
 	}
