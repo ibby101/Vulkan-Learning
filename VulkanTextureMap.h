@@ -18,7 +18,7 @@ public:
 		VkImage& image, VkDeviceMemory& imageMemory);
 
 	void createTextureImage(VkDevice device, VkQueue submitQueue, VkPhysicalDevice physicalDevice);
-	VkImageView createImageView(VkDevice device, VkImage image, VkFormat format);
+	VkImageView createImageView(VkDevice device, VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
 	void createTextureImageView(VkDevice device);
 	void createTextureSampler(VkDevice device, VkPhysicalDevice physicalDevice);
 
