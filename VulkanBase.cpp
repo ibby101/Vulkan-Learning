@@ -360,8 +360,6 @@ void VulkanBase::createGraphicsPipeline() {
 
 	vkDestroyShaderModule(device, fragShaderModule, nullptr);
 	vkDestroyShaderModule(device, vertShaderModule, nullptr);
-
-
 }
 
 void VulkanBase::createRenderPass() {
