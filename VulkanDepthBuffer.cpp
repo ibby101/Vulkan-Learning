@@ -17,7 +17,9 @@ VkFormat VulkanDepthBuffer::findSupportedFormat(const std::vector<VkFormat>& can
 	throw std::runtime_error("failed to find supported format.");
 }
 
-// Helper
+// Helper functions
+
+
 VkFormat VulkanDepthBuffer::findDepthFormat(VkPhysicalDevice physicalDevice) {
 	return findSupportedFormat(
 		{ VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT,VK_FORMAT_D24_UNORM_S8_UINT },

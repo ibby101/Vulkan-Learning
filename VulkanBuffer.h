@@ -35,5 +35,7 @@ public:
 
 	void transitionImageLayout(VkDevice device, VkQueue submitQueue, VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
 
+	bool hasStencilComponent(VkFormat format);
+
 	void cleanup(VkDevice device);
 };

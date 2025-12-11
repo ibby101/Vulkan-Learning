@@ -14,6 +14,11 @@ uint32_t VulkanBuffer::findMemoryType(VkPhysicalDevice physicalDevice,
 	throw std::runtime_error("failed to find suitable memory type.");
 }
 
+
+bool VulkanBuffer::hasStencilComponent(VkFormat format) {
+	return format == VK_FORMAT_D32_SFLOAT_S8_UINT || format == VK_FORMAT_D24_UNORM_S8_UINT;
+}
+
 void VulkanBuffer::createBuffer(VkDevice device, VkPhysicalDevice physicalDevice,
 	VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties,
 	VkBuffer& buffer, VkDeviceMemory& bufferMemory) {
