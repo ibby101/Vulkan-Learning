@@ -7,24 +7,11 @@
 #include "VulkanSwapChain.h"
 #include "VulkanUniformBuffer.h"
 #include "VulkanTextureMap.h"
+#include "VulkanDepthBuffer.h"
 
-const std::vector<Vertex> vertices = {
-	{{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},
-	{{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
-	{{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},
-	{{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}},
+extern const std::vector<Vertex> vertices;
 
-	{{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},
-	{{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
-	{{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},
-	{{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}}
-};
-
-const std::vector<uint16_t> indices = {
-	0, 1, 2, 2, 3, 0,
-	4, 5, 6, 6, 7, 4
-};
-
+extern const std::vector<uint16_t> indices;
 
 class VulkanBase {	
 protected:
@@ -32,7 +19,8 @@ protected:
 	VulkanBase()
 		: vulkanTextureMap(vulkanBuffer),
 		vulkanSwapChain(vulkanTextureMap),
-		vulkanUniformBuffer(vulkanBuffer, vulkanTextureMap)
+		vulkanUniformBuffer(vulkanBuffer, vulkanTextureMap),
+		vulkanDBuffer(vulkanTextureMap, vulkanBuffer)
 	{}
 
 	virtual ~VulkanBase() = default;
@@ -41,8 +29,10 @@ protected:
 	VulkanQueue vulkanQueue;
 	VulkanBuffer vulkanBuffer;
 	VulkanTextureMap vulkanTextureMap;
+	VulkanDepthBuffer vulkanDBuffer;
 	VulkanSwapChain vulkanSwapChain;
 	VulkanUniformBuffer vulkanUniformBuffer;
+	
 	
 	GLFWwindow* window = nullptr;
 	VkInstance instance = VK_NULL_HANDLE;
@@ -80,6 +70,7 @@ protected:
 	void createVertexBuffer();
 	void createIndexBuffer();
 	void createCommandBuffer();
+	void createDepthResources();
 	void createFrameBuffers();
 	void createDescriptorSetLayout();
 	void createSwapSystem();

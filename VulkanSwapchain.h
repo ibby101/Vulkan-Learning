@@ -29,9 +29,10 @@ public:
 	VkExtent2D swapChainExtent;
 
 	void createSwapSystem(VkDevice device, VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, GLFWwindow* window, QueueFamilyIndices indices);
-	void createFramebuffers(VkDevice device, VkRenderPass renderPass);
+	void createFramebuffers(VkDevice device, VkRenderPass renderPass, VkImageView depthImageView);
 	void createImageViews(VkDevice device);
-	void recreate(VkDevice device, VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, GLFWwindow* window, VkRenderPass renderPass, QueueFamilyIndices indices);
+	void recreate(VkDevice device, VkPhysicalDevice physicalDevice, VkSurfaceKHR surface,
+		GLFWwindow* window, VkRenderPass renderPass, VkImageView depthImageView, QueueFamilyIndices indices);
 	void cleanup(VkDevice device);
 
 	SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR surface);

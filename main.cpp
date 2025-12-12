@@ -28,8 +28,9 @@ private:
 		createRenderPass();
 		createDescriptorSetLayout();
 		createGraphicsPipeline();
-		createFrameBuffers();
 		createCommandPool(queueFamilies);
+		createDepthResources();
+		createFrameBuffers();
 		createTextureImage();
 		createTextureImageView();
 		createTextureSampler();

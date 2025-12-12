@@ -70,21 +70,23 @@ void VulkanSwapChain::createImageViews(VkDevice device) {
 	}
 }
 
-void VulkanSwapChain::createFramebuffers(VkDevice device, VkRenderPass renderPass) {
+void VulkanSwapChain::createFramebuffers(VkDevice device, VkRenderPass renderPass, VkImageView depthImageView) {
 	swapChainFramebuffers.resize(swapChainImageViews.size());
 
 	// iterating through all the image views to create framebuffers
 	for (size_t i = 0; i < swapChainImageViews.size(); ++i) {
-		VkImageView attachments[] = {
-			swapChainImageViews[i]
+
+		std::array<VkImageView, 2> attachments = {
+			swapChainImageViews[i],
+			depthImageView
 		};
 
 		VkFramebufferCreateInfo framebufferInfo{};
 
 		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 		framebufferInfo.renderPass = renderPass;
-		framebufferInfo.attachmentCount = 1;
-		framebufferInfo.pAttachments = attachments;
+		framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+		framebufferInfo.pAttachments = attachments.data();
 		framebufferInfo.width = swapChainExtent.width;
 		framebufferInfo.height = swapChainExtent.height;
 		framebufferInfo.layers = 1;
@@ -95,7 +97,8 @@ void VulkanSwapChain::createFramebuffers(VkDevice device, VkRenderPass renderPas
 	}
 }
 
-void VulkanSwapChain::recreate(VkDevice device, VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, GLFWwindow* window, VkRenderPass renderPass, QueueFamilyIndices indices) {
+void VulkanSwapChain::recreate(VkDevice device, VkPhysicalDevice physicalDevice, VkSurfaceKHR surface,
+	GLFWwindow* window, VkRenderPass renderPass, VkImageView depthImageView, QueueFamilyIndices indices) {
 	int width = 0, height = 0;
 
 	glfwGetFramebufferSize(window, &width, &height);
@@ -110,7 +113,7 @@ void VulkanSwapChain::recreate(VkDevice device, VkPhysicalDevice physicalDevice,
 	cleanup(device);
 
 	createSwapSystem(device, physicalDevice, surface, window, indices);
-	createFramebuffers(device, renderPass);
+	createFramebuffers(device, renderPass, depthImageView);
 }
 
 void VulkanSwapChain::cleanup(VkDevice device) {
