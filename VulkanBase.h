@@ -7,7 +7,6 @@
 #include "VulkanSwapChain.h"
 #include "VulkanUniformBuffer.h"
 #include "VulkanTextureMap.h"
-#include "VulkanDepthBuffer.h"
 
 extern const std::vector<Vertex> vertices;
 
@@ -18,9 +17,8 @@ protected:
 
 	VulkanBase()
 		: vulkanTextureMap(vulkanBuffer),
-		vulkanSwapChain(vulkanTextureMap),
-		vulkanUniformBuffer(vulkanBuffer, vulkanTextureMap),
-		vulkanDBuffer(vulkanTextureMap, vulkanBuffer)
+		vulkanSwapChain(vulkanQueue, vulkanTextureMap, vulkanBuffer),
+		vulkanUniformBuffer(vulkanBuffer, vulkanTextureMap)
 	{}
 
 	virtual ~VulkanBase() = default;
@@ -29,7 +27,6 @@ protected:
 	VulkanQueue vulkanQueue;
 	VulkanBuffer vulkanBuffer;
 	VulkanTextureMap vulkanTextureMap;
-	VulkanDepthBuffer vulkanDBuffer;
 	VulkanSwapChain vulkanSwapChain;
 	VulkanUniformBuffer vulkanUniformBuffer;
 	

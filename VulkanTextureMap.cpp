@@ -23,10 +23,10 @@ void VulkanTextureMap::createImage(VkDevice device, VkPhysicalDevice physicalDev
 	imageInfo.mipLevels = 1;
 	imageInfo.arrayLayers = 1;
 
-	imageInfo.format = VK_FORMAT_R8G8B8A8_SRGB;
-	imageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+	imageInfo.format = format;
+	imageInfo.tiling = tiling;
 	imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-	imageInfo.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+	imageInfo.usage = usage;
 	imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 	imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
 	imageInfo.flags = 0;
@@ -41,7 +41,7 @@ void VulkanTextureMap::createImage(VkDevice device, VkPhysicalDevice physicalDev
 	VkMemoryAllocateInfo allocInfo{};
 	allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 	allocInfo.allocationSize = memRequirements.size;
-	allocInfo.memoryTypeIndex = vulkanBuffer.findMemoryType(physicalDevice, memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+	allocInfo.memoryTypeIndex = vulkanBuffer.findMemoryType(physicalDevice, memRequirements.memoryTypeBits, properties);
 
 	if (vkAllocateMemory(device, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS) {
 		throw std::runtime_error("failed to allocate image memory.");
@@ -114,6 +114,7 @@ VkImageView VulkanTextureMap::createImageView(VkDevice device, VkImage image, Vk
 	viewInfo.subresourceRange.layerCount = 1;
 
 	VkImageView imageView;
+
 	if (vkCreateImageView(device, &viewInfo, nullptr, &imageView) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create image texture view.");
 	}

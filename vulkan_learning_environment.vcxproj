@@ -140,7 +140,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="VulkanDepthBuffer.cpp" />
     <ClCompile Include="VulkanSwapChain.cpp" />
     <ClCompile Include="VulkanTextureMap.cpp" />
     <ClCompile Include="VulkanUniformBuffer.cpp" />
@@ -157,7 +156,6 @@
     <ClInclude Include="VulkanBuffer.h" />
     <ClInclude Include="VulkanBase.h" />
     <ClInclude Include="VulkanDebug.h" />
-    <ClInclude Include="VulkanDepthBuffer.h" />
     <ClInclude Include="VulkanQueue.h" />
     <ClInclude Include="VulkanSwapChain.h" />
     <ClInclude Include="VulkanTextureMap.h" />

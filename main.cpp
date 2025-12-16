@@ -68,10 +68,6 @@ private:
 			vkDestroyFence(device, inFlightFences[i], nullptr);
 		}
 
-		for (size_t i = 0; i < vulkanSwapChain.swapChainImages.size(); ++i) {
-			vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
-		}
-
 		vkDestroyDevice(device, nullptr);
 
 

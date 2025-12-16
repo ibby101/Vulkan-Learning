@@ -398,7 +398,7 @@ void VulkanBase::createGraphicsPipeline() {
 void VulkanBase::createRenderPass() {
 	VkAttachmentDescription depthAttachment{};
 
-	depthAttachment.format = vulkanDBuffer.findDepthFormat(physicalDevice);
+	depthAttachment.format = vulkanSwapChain.findDepthFormat(physicalDevice);
 	depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
 	depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 	depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
@@ -555,7 +555,6 @@ void VulkanBase::drawFrame() {
 	vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
 	uint32_t imageIndex;
-
 	VkResult result = vkAcquireNextImageKHR(device, vulkanSwapChain.swapChain, UINT64_MAX, imageAvailableSemaphores[currentFrame], VK_NULL_HANDLE, &imageIndex);
 
 	if (result == VK_ERROR_OUT_OF_DATE_KHR) {
@@ -633,9 +632,9 @@ void VulkanBase::drawFrame() {
 
 void VulkanBase::createSyncObjects() {
 	imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
-	inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
-
 	renderFinishedSemaphores.resize(vulkanSwapChain.swapChainImages.size());
+
+	inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
 	imagesInFlight.resize(vulkanSwapChain.swapChainImages.size(), VK_NULL_HANDLE);
 
 	VkSemaphoreCreateInfo semaphoreInfo{};
@@ -646,15 +645,15 @@ void VulkanBase::createSyncObjects() {
 	fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
 	for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i) {
-		if (vkCreateFence(device, &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS ||
-			vkCreateSemaphore(device, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) != VK_SUCCESS) {
+		if (vkCreateSemaphore(device, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]) != VK_SUCCESS ||
+			vkCreateFence(device, &fenceInfo, nullptr, &inFlightFences[i]) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create synchronisation objects for a frame.");
 		}
 	}
 
 	for (size_t i = 0; i < vulkanSwapChain.swapChainImages.size(); ++i) {
 		if (vkCreateSemaphore(device, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]) != VK_SUCCESS) {
-			throw std::runtime_error("failed to create render finished semaphore for image.");
+			throw std::runtime_error("failed to create render finished semaphore.");
 		}
 	}
 }
@@ -680,11 +679,11 @@ void VulkanBase::createTextureSampler() {
 }
 
 void VulkanBase::createDepthResources() {
-	vulkanDBuffer.createDepthResources(device, physicalDevice, graphicsQueue, vulkanSwapChain.swapChainExtent);
+	vulkanSwapChain.createDepthResources(device, physicalDevice, graphicsQueue, vulkanSwapChain.swapChainExtent);
 }
 
 void VulkanBase::createFrameBuffers() {
-	vulkanSwapChain.createFramebuffers(device, renderPass, vulkanDBuffer.depthImageView);
+	vulkanSwapChain.createFramebuffers(device, renderPass, vulkanSwapChain.depthImageView);
 }
 
 void VulkanBase::createDescriptorSetLayout() {
@@ -707,7 +706,17 @@ void VulkanBase::createDescriptorComponents() {
 void VulkanBase::recreateSwapChain() {
 	QueueFamilyIndices queueFamilies = vulkanQueue.findQueueFamilies(physicalDevice, surface);
 
-	vulkanSwapChain.recreate(device, physicalDevice, surface, window, renderPass, vulkanDBuffer.depthImageView, queueFamilies);
+	vkDeviceWaitIdle(device);
+
+	// debugging
+	std::cout << "Destroying " << renderFinishedSemaphores.size() << " renderFinished semaphores" << std::endl;
+
+	for (auto semaphore : renderFinishedSemaphores) {
+		vkDestroySemaphore(device, semaphore, nullptr);
+	}
+	renderFinishedSemaphores.clear();
+
+	vulkanSwapChain.recreate(device, physicalDevice, surface, graphicsQueue, window, renderPass, queueFamilies);
 
 	renderFinishedSemaphores.resize(vulkanSwapChain.swapChainImages.size());
 	VkSemaphoreCreateInfo semaphoreInfo{};
@@ -719,11 +728,21 @@ void VulkanBase::recreateSwapChain() {
 		}
 	}
 
+	imagesInFlight.clear();
+	imagesInFlight.resize(vulkanSwapChain.swapChainImages.size(), VK_NULL_HANDLE);
+
 	createGraphicsPipeline();
 	createCommandBuffer();
 }
 
 void VulkanBase::cleanupSwapChain() {
+
+	for (auto semaphore : renderFinishedSemaphores) {
+		vkDestroySemaphore(device, semaphore, nullptr);
+	}
+
+	renderFinishedSemaphores.clear();
+
 	vulkanSwapChain.cleanup(device);
 }
 
