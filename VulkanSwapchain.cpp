@@ -111,9 +111,7 @@ void VulkanSwapChain::recreate(VkDevice device, VkPhysicalDevice physicalDevice,
 	vkDeviceWaitIdle(device);
 
 	cleanup(device);
-
 	createSwapSystem(device, physicalDevice, surface, window, indices);
-	createImageViews(device);
 	createDepthResources(device, physicalDevice, graphicsQueue, swapChainExtent);
 	createFramebuffers(device, renderPass, depthImageView);
 }

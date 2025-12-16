@@ -708,15 +708,19 @@ void VulkanBase::recreateSwapChain() {
 
 	vkDeviceWaitIdle(device);
 
+	vulkanSwapChain.recreate(device, physicalDevice, surface, graphicsQueue, window, renderPass, queueFamilies);
+
 	// debugging
 	std::cout << "Destroying " << renderFinishedSemaphores.size() << " renderFinished semaphores" << std::endl;
 
 	for (auto semaphore : renderFinishedSemaphores) {
 		vkDestroySemaphore(device, semaphore, nullptr);
 	}
+
 	renderFinishedSemaphores.clear();
 
-	vulkanSwapChain.recreate(device, physicalDevice, surface, graphicsQueue, window, renderPass, queueFamilies);
+	//debugging
+	std::cout << "Creating " << vulkanSwapChain.swapChainImages.size() << " new renderFinished semaphores" << std::endl;
 
 	renderFinishedSemaphores.resize(vulkanSwapChain.swapChainImages.size());
 	VkSemaphoreCreateInfo semaphoreInfo{};
@@ -731,11 +735,17 @@ void VulkanBase::recreateSwapChain() {
 	imagesInFlight.clear();
 	imagesInFlight.resize(vulkanSwapChain.swapChainImages.size(), VK_NULL_HANDLE);
 
+	// Destroying old pipeline and layout before creating new ones
+	vkDestroyPipeline(device, graphicsPipeline, nullptr);
+	vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
+
 	createGraphicsPipeline();
 	createCommandBuffer();
 }
 
 void VulkanBase::cleanupSwapChain() {
+	// debugging
+	std::cout << "Final cleanup: destroying " << renderFinishedSemaphores.size() << " renderFinished semaphores" << std::endl;
 
 	for (auto semaphore : renderFinishedSemaphores) {
 		vkDestroySemaphore(device, semaphore, nullptr);
