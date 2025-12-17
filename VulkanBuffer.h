@@ -5,6 +5,8 @@
 class VulkanBuffer {
 public:
 	VkCommandPool commandPool;
+	VkCommandPool transferCommandPool;
+
 	VkBuffer vertexBuffer;
 	VkDeviceMemory vertexBufferMemory;
 	VkBuffer indexBuffer;
@@ -19,9 +21,11 @@ public:
 
 	void createCommandPool(VkDevice device, const QueueFamilyIndices& indices);
 
+	void createTransferCommandPool(VkDevice device, const QueueFamilyIndices& indices);
+
 	void createVertexBuffer(VkDevice device, VkPhysicalDevice physicalDevice, VkQueue submitQueue, const std::vector<Vertex> vertices);
 
-	void createIndexBuffer(VkDevice device, VkPhysicalDevice physicalDevice, VkQueue submitQueue, const std::vector<uint16_t> indices);
+	void createIndexBuffer(VkDevice device, VkPhysicalDevice physicalDevice, VkQueue submitQueue, const std::vector<uint32_t> indices);
 
 	// Helper to copy data from one buffer to another using a command buffer
 	void copyBuffer(VkDevice device, VkQueue graphicsQueue,

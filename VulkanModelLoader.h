@@ -1,0 +1,11 @@
+#pragma once
+#include "CommonHeaders.h"
+
+class VulkanModelLoader {
+
+public:
+	std::vector<Vertex> vertices;
+	std::vector<uint32_t> indices;
+
+	void loadModel();
+};

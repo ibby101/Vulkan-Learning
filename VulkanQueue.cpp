@@ -19,9 +19,14 @@ QueueFamilyIndices VulkanQueue::findQueueFamilies(VkPhysicalDevice device, VkSur
 		VkBool32 presentSupport = false;	
 		vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
 
-
 		if (presentSupport) {
 			indices.presentFamily = i;
+		}
+
+		if ((queueFamily.queueFlags & VK_QUEUE_TRANSFER_BIT) &&
+			!(queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) &&
+			!(queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT)) {
+			indices.transferFamily = i;
 		}
 
 		if (indices.isComplete()) {
@@ -30,5 +35,10 @@ QueueFamilyIndices VulkanQueue::findQueueFamilies(VkPhysicalDevice device, VkSur
 
 		++i;
 	}
+
+	if (!indices.transferFamily.has_value() && indices.graphicsFamily.has_value()) {
+		indices.transferFamily = indices.graphicsFamily;
+	}
+
 	return indices;
 }

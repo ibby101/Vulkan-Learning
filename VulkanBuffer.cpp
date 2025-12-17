@@ -63,6 +63,17 @@ void VulkanBuffer::createCommandPool(VkDevice device, const QueueFamilyIndices& 
 	}
 }
 
+void VulkanBuffer::createTransferCommandPool(VkDevice device, const QueueFamilyIndices& indices) {
+	VkCommandPoolCreateInfo poolInfo{};
+	poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+	poolInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
+	poolInfo.queueFamilyIndex = indices.transferFamily.value();
+
+	if (vkCreateCommandPool(device, &poolInfo, nullptr, &transferCommandPool) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create transfer command pool.");
+	}
+}
+
 void VulkanBuffer::createVertexBuffer(VkDevice device, VkPhysicalDevice physicalDevice, VkQueue graphicsQueue, const std::vector<Vertex> vertices) {
 	VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
 
@@ -86,7 +97,7 @@ void VulkanBuffer::createVertexBuffer(VkDevice device, VkPhysicalDevice physical
 	vkFreeMemory(device, stagingBufferMemory, nullptr);
 }
 
-void VulkanBuffer::createIndexBuffer(VkDevice device, VkPhysicalDevice physicalDevice, VkQueue graphicsQueue, const std::vector<uint16_t> indices) {
+void VulkanBuffer::createIndexBuffer(VkDevice device, VkPhysicalDevice physicalDevice, VkQueue graphicsQueue, const std::vector<uint32_t> indices) {
 	VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
 
 	VkBuffer stagingBuffer;
@@ -273,5 +284,6 @@ void VulkanBuffer::cleanup(VkDevice device) {
 	vkDestroyBuffer(device, vertexBuffer, nullptr);
 	vkFreeMemory(device, vertexBufferMemory, nullptr);
 
+	vkDestroyCommandPool(device, transferCommandPool, nullptr);
 	vkDestroyCommandPool(device, commandPool, nullptr);
 }

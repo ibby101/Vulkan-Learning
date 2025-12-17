@@ -111,7 +111,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\Users\Ibroa\Documents\Visual Studio 2022\Libraries\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Ibroa\Documents\Visual Studio 2022\Libraries\tinyobj;C:\Users\Ibroa\Documents\Visual Studio 2022\Libraries\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,7 +129,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\Users\Ibroa\Documents\Visual Studio 2022\Libraries\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Ibroa\Documents\Visual Studio 2022\Libraries\tinyobj;C:\Users\Ibroa\Documents\Visual Studio 2022\Libraries\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="VulkanModelLoader.cpp" />
     <ClCompile Include="VulkanSwapChain.cpp" />
     <ClCompile Include="VulkanTextureMap.cpp" />
     <ClCompile Include="VulkanUniformBuffer.cpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="VulkanBuffer.h" />
     <ClInclude Include="VulkanBase.h" />
     <ClInclude Include="VulkanDebug.h" />
+    <ClInclude Include="VulkanModelLoader.h" />
     <ClInclude Include="VulkanQueue.h" />
     <ClInclude Include="VulkanSwapChain.h" />
     <ClInclude Include="VulkanTextureMap.h" />

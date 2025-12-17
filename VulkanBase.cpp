@@ -1,23 +1,5 @@
 #include "VulkanBase.h"
 
-const std::vector<Vertex> vertices = {
-	{{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},
-	{{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
-	{{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},
-	{{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}},
-
-	{{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},
-	{{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
-	{{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},
-	{{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}}
-};
-
-const std::vector<uint16_t> indices = {
-	0, 1, 2, 2, 3, 0,
-	4, 5, 6, 6, 7, 4
-};
-
-
 void VulkanBase::setupDebugMessenger() {
 	vulkanDebug.setupDebugMessenger(instance);
 }
@@ -156,7 +138,8 @@ void VulkanBase::pickPhysicalDevice() {
 void VulkanBase::createLogicalDevice() {
 	std::set<uint32_t> uniqueQueueFamilies = {
 		queueFamilies.graphicsFamily.value(),
-		queueFamilies.presentFamily.value()
+		queueFamilies.presentFamily.value(),
+		queueFamilies.transferFamily.value()
 	};
 	// creating queue create info structures
 	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
@@ -202,6 +185,9 @@ void VulkanBase::createLogicalDevice() {
 
 	// retrieving present queue handles
 	vkGetDeviceQueue(device, queueFamilies.presentFamily.value(), 0, &presentQueue);
+
+	// retrieving transfer queue handles
+	vkGetDeviceQueue(device, queueFamilies.transferFamily.value(), 0, &transferQueue);
 }
 
 void VulkanBase::createSurface(GLFWwindow* window) {
@@ -518,7 +504,7 @@ void VulkanBase::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t ima
 	VkDeviceSize offsets[] = { 0 };
 	vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 
-	vkCmdBindIndexBuffer(commandBuffer, vulkanBuffer.indexBuffer, 0, VK_INDEX_TYPE_UINT16);
+	vkCmdBindIndexBuffer(commandBuffer, vulkanBuffer.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
 	// viewport and scissor will be set dynamically
 	VkViewport viewport{};
@@ -542,7 +528,7 @@ void VulkanBase::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t ima
 	vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1,
 		&vulkanUniformBuffer.descriptorSets[currentFrame], 0, nullptr);
 
-	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
+	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(modelLoader.indices.size()), 1, 0, 0, 0);
 
 	vkCmdEndRenderPass(commandBuffer);
 
@@ -659,11 +645,11 @@ void VulkanBase::createSyncObjects() {
 }
 
 void VulkanBase::createVertexBuffer() {
-	vulkanBuffer.createVertexBuffer(device, physicalDevice, graphicsQueue, vertices);
+	vulkanBuffer.createVertexBuffer(device, physicalDevice, graphicsQueue, modelLoader.vertices);
 }
 
 void VulkanBase::createIndexBuffer() {
-	vulkanBuffer.createIndexBuffer(device, physicalDevice, graphicsQueue, indices);
+	vulkanBuffer.createIndexBuffer(device, physicalDevice, graphicsQueue, modelLoader.indices);
 }
 
 void VulkanBase::createTextureImage() {
@@ -711,7 +697,7 @@ void VulkanBase::recreateSwapChain() {
 	vulkanSwapChain.recreate(device, physicalDevice, surface, graphicsQueue, window, renderPass, queueFamilies);
 
 	// debugging
-	std::cout << "Destroying " << renderFinishedSemaphores.size() << " renderFinished semaphores" << std::endl;
+	//std::cout << "Destroying " << renderFinishedSemaphores.size() << " renderFinished semaphores" << std::endl;
 
 	for (auto semaphore : renderFinishedSemaphores) {
 		vkDestroySemaphore(device, semaphore, nullptr);
@@ -720,7 +706,7 @@ void VulkanBase::recreateSwapChain() {
 	renderFinishedSemaphores.clear();
 
 	//debugging
-	std::cout << "Creating " << vulkanSwapChain.swapChainImages.size() << " new renderFinished semaphores" << std::endl;
+	//std::cout << "Creating " << vulkanSwapChain.swapChainImages.size() << " new renderFinished semaphores" << std::endl;
 
 	renderFinishedSemaphores.resize(vulkanSwapChain.swapChainImages.size());
 	VkSemaphoreCreateInfo semaphoreInfo{};
@@ -743,9 +729,13 @@ void VulkanBase::recreateSwapChain() {
 	createCommandBuffer();
 }
 
+void VulkanBase::loadModel() {
+	modelLoader.loadModel();
+}
+
 void VulkanBase::cleanupSwapChain() {
 	// debugging
-	std::cout << "Final cleanup: destroying " << renderFinishedSemaphores.size() << " renderFinished semaphores" << std::endl;
+	//std::cout << "Final cleanup: destroying " << renderFinishedSemaphores.size() << " renderFinished semaphores" << std::endl;
 
 	for (auto semaphore : renderFinishedSemaphores) {
 		vkDestroySemaphore(device, semaphore, nullptr);

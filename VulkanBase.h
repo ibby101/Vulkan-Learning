@@ -7,10 +7,7 @@
 #include "VulkanSwapChain.h"
 #include "VulkanUniformBuffer.h"
 #include "VulkanTextureMap.h"
-
-extern const std::vector<Vertex> vertices;
-
-extern const std::vector<uint16_t> indices;
+#include "VulkanModelLoader.h"
 
 class VulkanBase {	
 protected:
@@ -29,14 +26,17 @@ protected:
 	VulkanTextureMap vulkanTextureMap;
 	VulkanSwapChain vulkanSwapChain;
 	VulkanUniformBuffer vulkanUniformBuffer;
-	
+	VulkanModelLoader modelLoader;
 	
 	GLFWwindow* window = nullptr;
 	VkInstance instance = VK_NULL_HANDLE;
 	VkDevice device = VK_NULL_HANDLE;
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+
 	VkQueue graphicsQueue = VK_NULL_HANDLE;
 	VkQueue presentQueue = VK_NULL_HANDLE;
+	VkQueue transferQueue = VK_NULL_HANDLE;
+
 	VkSurfaceKHR surface = VK_NULL_HANDLE;
 	VkRenderPass renderPass;
 	VkPipelineLayout pipelineLayout;
@@ -80,6 +80,7 @@ protected:
 	void drawFrame();
 	void createUniformBuffers();
 	void recreateSwapChain();
+	void loadModel();
 	void cleanupSwapChain();
 	void cleanupBuffers();
 	void cleanupUniformBuffers();
