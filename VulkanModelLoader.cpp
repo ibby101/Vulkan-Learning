@@ -13,8 +13,16 @@ void VulkanModelLoader::loadModel() {
 		throw std::runtime_error(err);
 	}
 
+	std::unordered_map<Vertex, uint32_t> uniqueVertices{};
+	size_t totalOriginalVertices = 0;
+
 	for (const auto& shape : shapes) {
 		for (const auto& index : shape.mesh.indices) {
+
+			// checking total vertices prior to deduplication
+			totalOriginalVertices++;
+
+
 			Vertex vertex{};
 
 			vertex.pos = {
@@ -30,9 +38,15 @@ void VulkanModelLoader::loadModel() {
 
 			vertex.color = { 1.0f, 1.0f, 1.0f };
 
-			vertices.push_back(vertex);
+			if (uniqueVertices.count(vertex) == 0) {
+				uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
+				vertices.push_back(vertex);
+			}
 
-			indices.push_back(static_cast<uint32_t>(vertices.size()) - 1);
+			indices.push_back(uniqueVertices[vertex]);
 		}
 	}
+	std::cout << "Total number of vertices before deduplication: " << totalOriginalVertices << std::endl;
+	std::cout << "Total number of vertices after deduplication: " << vertices.size() << std::endl;
+	std::cout << "Total number of indices: " << indices.size() << std::endl;
 }
