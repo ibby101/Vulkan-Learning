@@ -8,14 +8,16 @@
 #include "VulkanUniformBuffer.h"
 #include "VulkanTextureMap.h"
 #include "VulkanModelLoader.h"
+#include "VulkanSampling.h"
 
 class VulkanBase {	
 protected:
 
 	VulkanBase()
 		: vulkanTextureMap(vulkanBuffer),
-		vulkanSwapChain(vulkanQueue, vulkanTextureMap, vulkanBuffer),
-		vulkanUniformBuffer(vulkanBuffer, vulkanTextureMap)
+		vulkanSwapChain(vulkanQueue, vulkanTextureMap, vulkanBuffer, vulkanSampling),
+		vulkanUniformBuffer(vulkanBuffer, vulkanTextureMap),
+		vulkanSampling(vulkanTextureMap)
 	{}
 
 	virtual ~VulkanBase() = default;
@@ -27,6 +29,7 @@ protected:
 	VulkanSwapChain vulkanSwapChain;
 	VulkanUniformBuffer vulkanUniformBuffer;
 	VulkanModelLoader modelLoader;
+	VulkanSampling vulkanSampling;
 	
 	GLFWwindow* window = nullptr;
 	VkInstance instance = VK_NULL_HANDLE;
@@ -67,6 +70,7 @@ protected:
 	void createVertexBuffer();
 	void createIndexBuffer();
 	void createCommandBuffer();
+	void createColorResources();
 	void createDepthResources();
 	void createFrameBuffers();
 	void createDescriptorSetLayout();

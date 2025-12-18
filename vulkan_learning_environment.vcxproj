@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="VulkanModelLoader.cpp" />
+    <ClCompile Include="VulkanSampling.cpp" />
     <ClCompile Include="VulkanSwapChain.cpp" />
     <ClCompile Include="VulkanTextureMap.cpp" />
     <ClCompile Include="VulkanUniformBuffer.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="VulkanDebug.h" />
     <ClInclude Include="VulkanModelLoader.h" />
     <ClInclude Include="VulkanQueue.h" />
+    <ClInclude Include="VulkanSampling.h" />
     <ClInclude Include="VulkanSwapChain.h" />
     <ClInclude Include="VulkanTextureMap.h" />
     <ClInclude Include="VulkanUniformBuffer.h" />

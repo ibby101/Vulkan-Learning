@@ -1,8 +1,10 @@
 #pragma once
 
 #include "CommonHeaders.h"
+
 #include "VulkanQueue.h"
 #include "VulkanBuffer.h"
+#include "VulkanSampling.h"
 #include "VulkanTextureMap.h"
 
 struct SwapChainSupportDetails {
@@ -17,7 +19,8 @@ public:
 	VkDeviceMemory depthImageMemory;
 	VkImageView depthImageView;
 
-	VulkanSwapChain(VulkanQueue& queue, VulkanTextureMap& tMap, VulkanBuffer& buffer) : vulkanQueue(queue), vulkanTMap(tMap), vulkanBuffer(buffer) {}
+	VulkanSwapChain(VulkanQueue& queue, VulkanTextureMap& tMap, VulkanBuffer& buffer, VulkanSampling& sampling) 
+		: vulkanQueue(queue), vulkanTMap(tMap), vulkanBuffer(buffer), vulkanSampling(sampling) {}
 
 	VkSwapchainKHR swapChain = VK_NULL_HANDLE;
 	std::vector<VkImage> swapChainImages;
@@ -28,7 +31,7 @@ public:
 
 	void createSwapSystem(VkDevice device, VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, GLFWwindow* window, QueueFamilyIndices indices);
 
-	void createFramebuffers(VkDevice device, VkRenderPass renderPass, VkImageView depthImageView);
+	void createFramebuffers(VkDevice device, VkRenderPass renderPass, VkImageView depthImageView, VkImageView colorImageView);
 
 	void createImageViews(VkDevice device);
 
@@ -49,6 +52,7 @@ private:
 	VulkanQueue& vulkanQueue;
 	VulkanTextureMap& vulkanTMap;
 	VulkanBuffer& vulkanBuffer;
+	VulkanSampling& vulkanSampling;
 
 	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);

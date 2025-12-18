@@ -70,15 +70,16 @@ void VulkanSwapChain::createImageViews(VkDevice device) {
 	}
 }
 
-void VulkanSwapChain::createFramebuffers(VkDevice device, VkRenderPass renderPass, VkImageView depthImageView) {
+void VulkanSwapChain::createFramebuffers(VkDevice device, VkRenderPass renderPass, VkImageView depthImageView, VkImageView colorImageView) {
 	swapChainFramebuffers.resize(swapChainImageViews.size());
 
 	// iterating through all the image views to create framebuffers
 	for (size_t i = 0; i < swapChainImageViews.size(); ++i) {
 
-		std::array<VkImageView, 2> attachments = {
-			swapChainImageViews[i],
-			depthImageView
+		std::array<VkImageView, 3> attachments = {
+			colorImageView,
+			depthImageView,
+			swapChainImageViews[i]
 		};
 
 		VkFramebufferCreateInfo framebufferInfo{};
@@ -112,15 +113,18 @@ void VulkanSwapChain::recreate(VkDevice device, VkPhysicalDevice physicalDevice,
 
 	cleanup(device);
 	createSwapSystem(device, physicalDevice, surface, window, indices);
+	vulkanSampling.createColorResources(device, physicalDevice, swapChainExtent, swapChainImageFormat);
 	createDepthResources(device, physicalDevice, graphicsQueue, swapChainExtent);
-	createFramebuffers(device, renderPass, depthImageView);
+	createFramebuffers(device, renderPass, depthImageView, vulkanSampling.colorImageView);
 }
 
 void VulkanSwapChain::cleanup(VkDevice device) {
+	vkDestroyImageView(device, vulkanSampling.colorImageView, nullptr);
+	vkDestroyImage(device, vulkanSampling.colorImage, nullptr);
+	vkFreeMemory(device, vulkanSampling.colorImageMemory, nullptr);
+
 	vkDestroyImageView(device, depthImageView, nullptr);
-
 	vkDestroyImage(device, depthImage, nullptr);
-
 	vkFreeMemory(device, depthImageMemory, nullptr);
 
 	for (auto framebuffer : swapChainFramebuffers) {
@@ -174,11 +178,11 @@ VkSurfaceFormatKHR VulkanSwapChain::chooseSwapSurfaceFormat(const std::vector<Vk
 // choosing the best available present mode
 
 VkPresentModeKHR VulkanSwapChain::chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes) {
-	//for (const auto& availablePresentMode : availablePresentModes) {
-	//	if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
-	//		return availablePresentMode;
-	//	}
-	//}
+	for (const auto& availablePresentMode : availablePresentModes) {
+		if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
+			return availablePresentMode;
+		}
+	}
 	return VK_PRESENT_MODE_FIFO_KHR;
 }
 
@@ -235,8 +239,8 @@ void VulkanSwapChain::createDepthResources(VkDevice device, VkPhysicalDevice phy
 	VkFormat depthFormat = findDepthFormat(physicalDevice);
 
 	vulkanTMap.createImage(device, physicalDevice, swapChainExtent.width, swapChainExtent.height, 1,
-		depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
-		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, depthImage, depthImageMemory);
+		depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, 
+		vulkanSampling.msaaSamples, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, depthImage, depthImageMemory);
 
 	depthImageView = vulkanTMap.createImageView(device, depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT, 1);
 

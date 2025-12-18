@@ -29,6 +29,7 @@ private:
 		createDescriptorSetLayout();
 		createGraphicsPipeline();
 		createCommandPool(queueFamilies);
+		createColorResources();
 		createDepthResources();
 		createFrameBuffers();
 		createTextureImage();
