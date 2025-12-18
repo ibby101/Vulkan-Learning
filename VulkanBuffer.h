@@ -23,9 +23,9 @@ public:
 
 	void createTransferCommandPool(VkDevice device, const QueueFamilyIndices& indices);
 
-	void createVertexBuffer(VkDevice device, VkPhysicalDevice physicalDevice, VkQueue submitQueue, const std::vector<Vertex> vertices);
+	void createVertexBuffer(VkDevice device, VkPhysicalDevice physicalDevice, VkQueue graphicsQueue, const std::vector<Vertex> vertices);
 
-	void createIndexBuffer(VkDevice device, VkPhysicalDevice physicalDevice, VkQueue submitQueue, const std::vector<uint32_t> indices);
+	void createIndexBuffer(VkDevice device, VkPhysicalDevice physicalDevice, VkQueue graphicsQueue, const std::vector<uint32_t> indices);
 
 	// Helper to copy data from one buffer to another using a command buffer
 	void copyBuffer(VkDevice device, VkQueue graphicsQueue,
@@ -35,9 +35,9 @@ public:
 
 	VkCommandBuffer beginSingleTimeCommands(VkDevice device);
 
-	void endSingleTimeCommands(VkDevice device, VkQueue submitQueue, VkCommandBuffer commandBuffer);
+	void endSingleTimeCommands(VkDevice device, VkQueue graphicsQueue, VkCommandBuffer commandBuffer);
 
-	void transitionImageLayout(VkDevice device, VkQueue submitQueue, VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+	void transitionImageLayout(VkDevice device, VkQueue graphicsQueue, VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels);
 
 	bool hasStencilComponent(VkFormat format);
 

@@ -157,8 +157,8 @@ void VulkanBuffer::endSingleTimeCommands(VkDevice device, VkQueue graphicsQueue,
 }
 
 
-void VulkanBuffer::transitionImageLayout(VkDevice device, VkQueue submitQueue,
-	VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout) {
+void VulkanBuffer::transitionImageLayout(VkDevice device, VkQueue graphicsQueue, VkImage image,
+	VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels) {
 
 	VkCommandBuffer commandBuffer = beginSingleTimeCommands(device);
 
@@ -173,7 +173,7 @@ void VulkanBuffer::transitionImageLayout(VkDevice device, VkQueue submitQueue,
 	barrier.image = image;
 	barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 	barrier.subresourceRange.baseMipLevel = 0;
-	barrier.subresourceRange.levelCount = 1;
+	barrier.subresourceRange.levelCount = mipLevels;
 	barrier.subresourceRange.baseArrayLayer = 0;
 	barrier.subresourceRange.layerCount = 1;
 
@@ -228,7 +228,7 @@ void VulkanBuffer::transitionImageLayout(VkDevice device, VkQueue submitQueue,
 		1, &barrier // image memory barrier in use!
 	);
 
-	endSingleTimeCommands(device, submitQueue, commandBuffer);
+	endSingleTimeCommands(device, graphicsQueue, commandBuffer);
 }
 
 void VulkanBuffer::copyBuffer(VkDevice device, VkQueue graphicsQueue,

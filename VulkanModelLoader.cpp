@@ -46,7 +46,30 @@ void VulkanModelLoader::loadModel() {
 			indices.push_back(uniqueVertices[vertex]);
 		}
 	}
-	std::cout << "Total number of vertices before deduplication: " << totalOriginalVertices << std::endl;
-	std::cout << "Total number of vertices after deduplication: " << vertices.size() << std::endl;
-	std::cout << "Total number of indices: " << indices.size() << std::endl;
+
+	// Calculate bounding box
+	glm::vec3 minBounds(FLT_MAX);
+	glm::vec3 maxBounds(-FLT_MAX);
+
+	for (const auto& vertex : vertices) {
+		minBounds = glm::min(minBounds, vertex.pos);
+		maxBounds = glm::max(maxBounds, vertex.pos);
+	}
+
+	// Calculate center and scale
+	glm::vec3 center = (minBounds + maxBounds) * 0.5f;
+	glm::vec3 size = maxBounds - minBounds;
+	float maxDimension = std::max(std::max(size.x, size.y), size.z);
+	float scale = 1.5f / maxDimension;  // Target size of 1.5 units
+
+	// Apply transformations to all vertices
+	for (auto& vertex : vertices) {
+		vertex.pos = (vertex.pos - center) * scale;
+	}
+
+	std::cout << "Model centered and scaled by " << scale << std::endl;
+
+	//std::cout << "Total number of vertices before deduplication: " << totalOriginalVertices << std::endl;
+	//std::cout << "Total number of vertices after deduplication: " << vertices.size() << std::endl;
+	//std::cout << "Duplicate Removal Ratio:  " << ((float)vertices.size() / totalOriginalVertices) * 100.0f <<  "%" << std::endl;
 }

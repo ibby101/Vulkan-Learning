@@ -26,6 +26,7 @@
 #include <set>
 #include <cstdint>
 #include <algorithm>
+#include <cfloat>
 #include <fstream>
 
 // ----------------- SHARED DATA TYPES ----------------------
