@@ -33,4 +33,6 @@ public:
 
 	void createCubemapSampler(VkDevice device, VkPhysicalDevice physicalDevice);
 
+	void cleanup(VkDevice device);
+
 };
