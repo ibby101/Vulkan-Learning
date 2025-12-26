@@ -31,13 +31,14 @@ public:
 	void copyBuffer(VkDevice device, VkQueue graphicsQueue,
 		VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 
-	void copyBufferToImage(VkDevice device, VkQueue graphicsQueue, VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
+	void copyBufferToImage(VkDevice device, VkQueue graphicsQueue, VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layer);
 
 	VkCommandBuffer beginSingleTimeCommands(VkDevice device);
 
 	void endSingleTimeCommands(VkDevice device, VkQueue graphicsQueue, VkCommandBuffer commandBuffer);
 
-	void transitionImageLayout(VkDevice device, VkQueue graphicsQueue, VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels);
+	void transitionImageLayout(VkDevice device, VkQueue graphicsQueue, VkImage image, VkFormat format,
+		VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels, uint32_t layerCount);
 
 	bool hasStencilComponent(VkFormat format);
 

@@ -158,7 +158,7 @@ void VulkanBuffer::endSingleTimeCommands(VkDevice device, VkQueue graphicsQueue,
 
 
 void VulkanBuffer::transitionImageLayout(VkDevice device, VkQueue graphicsQueue, VkImage image,
-	VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels) {
+	VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, uint32_t mipLevels, uint32_t layerCount) {
 
 	VkCommandBuffer commandBuffer = beginSingleTimeCommands(device);
 
@@ -175,7 +175,7 @@ void VulkanBuffer::transitionImageLayout(VkDevice device, VkQueue graphicsQueue,
 	barrier.subresourceRange.baseMipLevel = 0;
 	barrier.subresourceRange.levelCount = mipLevels;
 	barrier.subresourceRange.baseArrayLayer = 0;
-	barrier.subresourceRange.layerCount = 1;
+	barrier.subresourceRange.layerCount = layerCount;
 
 	barrier.srcAccessMask = 0;
 	barrier.dstAccessMask = 0;
@@ -244,7 +244,7 @@ void VulkanBuffer::copyBuffer(VkDevice device, VkQueue graphicsQueue,
 }
 
 void VulkanBuffer::copyBufferToImage(VkDevice device, VkQueue graphicsQueue,
-	VkBuffer buffer, VkImage image, uint32_t width, uint32_t height) {
+	VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layer) {
 
 	VkCommandBuffer commandBuffer = beginSingleTimeCommands(device);
 
@@ -255,7 +255,7 @@ void VulkanBuffer::copyBufferToImage(VkDevice device, VkQueue graphicsQueue,
 
 	region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 	region.imageSubresource.mipLevel = 0;
-	region.imageSubresource.baseArrayLayer = 0;
+	region.imageSubresource.baseArrayLayer = layer;
 	region.imageSubresource.layerCount = 1;
 
 	region.imageOffset = { 0,0,0 };

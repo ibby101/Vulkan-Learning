@@ -66,7 +66,7 @@ void VulkanSwapChain::createImageViews(VkDevice device) {
 	swapChainImageViews.resize(swapChainImages.size());
 
 	for (uint32_t i = 0; i < swapChainImages.size(); ++i) {
-		swapChainImageViews[i] = vulkanTMap.createImageView(device, swapChainImages[i], swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1);
+		swapChainImageViews[i] = vulkanTMap.createImageView(device, swapChainImages[i], swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT, 1, 1);
 	}
 }
 
@@ -240,11 +240,11 @@ void VulkanSwapChain::createDepthResources(VkDevice device, VkPhysicalDevice phy
 
 	vulkanTMap.createImage(device, physicalDevice, swapChainExtent.width, swapChainExtent.height, 1,
 		depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, 
-		vulkanSampling.msaaSamples, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, depthImage, depthImageMemory);
+		vulkanSampling.msaaSamples, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0, depthImage, depthImageMemory);
 
-	depthImageView = vulkanTMap.createImageView(device, depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT, 1);
+	depthImageView = vulkanTMap.createImageView(device, depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT, 1, 1);
 
 	vulkanBuffer.transitionImageLayout(device, graphicsQueue, depthImage, depthFormat,
-		VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, 1);
+		VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, 1, 1);
 
 }

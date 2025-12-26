@@ -15,12 +15,16 @@ public:
 
 	void createImage(VkDevice device, VkPhysicalDevice physicalDevice, uint32_t width, uint32_t height,
 		uint32_t mipLevels, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, 
-		VkSampleCountFlagBits numSamples, VkMemoryPropertyFlags properties, VkImage& image, 
+		VkSampleCountFlagBits numSamples, VkMemoryPropertyFlags properties, VkImageCreateFlags flag, VkImage& image, 
 		VkDeviceMemory& imageMemory);
 
 	void createTextureImage(VkDevice device, VkQueue graphicsQueue, VkPhysicalDevice physicalDevice);
-	VkImageView createImageView(VkDevice device, VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, uint32_t mipLevels);
+
+	VkImageView createImageView(VkDevice device, VkImage image, VkFormat format,
+		VkImageAspectFlags aspectFlags, uint32_t mipLevels, uint32_t layers, VkImageViewType viewType);
+
 	void createTextureImageView(VkDevice device);
+
 	void createTextureSampler(VkDevice device, VkPhysicalDevice physicalDevice);
 
 	void generateMipMaps(VkDevice device, VkPhysicalDevice physicalDevice, VkQueue graphicsQueue,
