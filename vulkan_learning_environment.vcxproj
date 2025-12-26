@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="VulkanCubemap.cpp" />
     <ClCompile Include="VulkanModelLoader.cpp" />
     <ClCompile Include="VulkanSampling.cpp" />
     <ClCompile Include="VulkanSwapChain.cpp" />
@@ -157,6 +158,7 @@
     <ClInclude Include="CommonHeaders.h" />
     <ClInclude Include="VulkanBuffer.h" />
     <ClInclude Include="VulkanBase.h" />
+    <ClInclude Include="VulkanCubemap.h" />
     <ClInclude Include="VulkanDebug.h" />
     <ClInclude Include="VulkanModelLoader.h" />
     <ClInclude Include="VulkanQueue.h" />
