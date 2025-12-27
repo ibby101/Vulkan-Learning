@@ -484,75 +484,6 @@ void VulkanBase::createCommandBuffer() {
 	}
 }
 
-void VulkanBase::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
-	VkCommandBufferBeginInfo beginInfo{};
-
-	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-	beginInfo.flags = 0;
-	beginInfo.pInheritanceInfo = nullptr;
-
-	if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
-		throw std::runtime_error("failed to begin recording command buffer.");
-	}
-
-	VkRenderPassBeginInfo renderPassInfo{};
-
-	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-	renderPassInfo.renderPass = renderPass;
-	renderPassInfo.framebuffer = vulkanSwapChain.swapChainFramebuffers[imageIndex];
-
-	renderPassInfo.renderArea.offset = { 0,0 };
-	renderPassInfo.renderArea.extent = vulkanSwapChain.swapChainExtent;
-
-	std::array<VkClearValue, 2> clearValues{};
-
-	clearValues[0].color = { {0.0f, 0.0f, 0.0f, 1.0f } };
-	clearValues[1].depthStencil = { 1.0f, 0 };
-
-	renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
-	renderPassInfo.pClearValues = clearValues.data();
-
-	vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-
-	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
-
-	VkBuffer vertexBuffers[] = { vulkanBuffer.vertexBuffer };
-	VkDeviceSize offsets[] = { 0 };
-	vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-
-	vkCmdBindIndexBuffer(commandBuffer, vulkanBuffer.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
-
-	// viewport and scissor will be set dynamically
-	VkViewport viewport{};
-
-	viewport.x = 0.0f;
-	viewport.y = 0.0f;
-	viewport.width = (float)vulkanSwapChain.swapChainExtent.width;
-	viewport.height = (float)vulkanSwapChain.swapChainExtent.height;
-	viewport.minDepth = 0.0f;
-	viewport.maxDepth = 1.0f;
-
-	vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
-
-	VkRect2D scissor{};
-
-	scissor.offset = { 0,0 };
-	scissor.extent = vulkanSwapChain.swapChainExtent;
-
-	vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
-
-	vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1,
-		&vulkanUniformBuffer.descriptorSets[currentFrame], 0, nullptr);
-
-	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(modelLoader.indices.size()), 1, 0, 0, 0);
-
-	vkCmdEndRenderPass(commandBuffer);
-
-	if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
-		throw std::runtime_error("failed to record command buffer.");
-	}
-}
-
 void VulkanBase::createSkyBoxPipeline() {
 	auto vertShaderCode = readFile("skybox_vert.spv");
 	auto fragShaderCode = readFile("skybox_frag.spv");
@@ -685,6 +616,84 @@ void VulkanBase::createSkyBoxPipeline() {
 	vkDestroyShaderModule(device, vertShaderModule, nullptr);
 }
 
+void VulkanBase::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
+	VkCommandBufferBeginInfo beginInfo{};
+
+	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+	beginInfo.flags = 0;
+	beginInfo.pInheritanceInfo = nullptr;
+
+	if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS) {
+		throw std::runtime_error("failed to begin recording command buffer.");
+	}
+
+	VkRenderPassBeginInfo renderPassInfo{};
+
+	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+	renderPassInfo.renderPass = renderPass;
+	renderPassInfo.framebuffer = vulkanSwapChain.swapChainFramebuffers[imageIndex];
+
+	renderPassInfo.renderArea.offset = { 0,0 };
+	renderPassInfo.renderArea.extent = vulkanSwapChain.swapChainExtent;
+
+	std::array<VkClearValue, 2> clearValues{};
+
+	clearValues[0].color = { {0.0f, 0.0f, 0.0f, 1.0f } };
+	clearValues[1].depthStencil = { 1.0f, 0 };
+
+	renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+	renderPassInfo.pClearValues = clearValues.data();
+
+	vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+	// viewport and scissor will be set dynamically
+	VkViewport viewport{};
+
+	viewport.x = 0.0f;
+	viewport.y = 0.0f;
+	viewport.width = (float)vulkanSwapChain.swapChainExtent.width;
+	viewport.height = (float)vulkanSwapChain.swapChainExtent.height;
+	viewport.minDepth = 0.0f;
+	viewport.maxDepth = 1.0f;
+
+	vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+
+	VkRect2D scissor{};
+	scissor.offset = { 0,0 };
+	scissor.extent = vulkanSwapChain.swapChainExtent;
+
+	vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+
+	// drawing skybox first
+	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanCubemap.skyboxPipeline);
+
+	VkBuffer skyboxVertexBuffers[] = { vulkanCubemap.skyboxVertexBuffer };
+	VkDeviceSize offsets[] = { 0 };
+
+	vkCmdBindVertexBuffers(commandBuffer, 0, 1, skyboxVertexBuffers, offsets);
+
+	vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, vulkanCubemap.skyboxPipelineLayout, 0, 1,
+		&vulkanCubemap.skyboxDescriptorSets[currentFrame], 0, nullptr);
+
+	vkCmdDraw(commandBuffer, 36, 1, 0, 0); // 36 vertices for skybox cube
+
+	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+
+	VkBuffer vertexBuffers[] = { vulkanBuffer.vertexBuffer };
+
+	vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
+	vkCmdBindIndexBuffer(commandBuffer, vulkanBuffer.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(modelLoader.indices.size()), 1, 0, 0, 0);
+
+	vkCmdEndRenderPass(commandBuffer);
+
+	if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
+		throw std::runtime_error("failed to record command buffer.");
+	}
+}
+
 void VulkanBase::drawFrame() {
 	vkWaitForFences(device, 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
 
@@ -792,8 +801,13 @@ void VulkanBase::createSyncObjects() {
 	}
 }
 
+
 void VulkanBase::createVertexBuffer() {
 	vulkanBuffer.createVertexBuffer(device, physicalDevice, graphicsQueue, modelLoader.vertices);
+}
+
+void VulkanBase::createSkyboxVertexBuffer() {
+	vulkanCubemap.createSkyboxVertexBuffer(device, physicalDevice, graphicsQueue);
 }
 
 void VulkanBase::createIndexBuffer() {
@@ -804,12 +818,24 @@ void VulkanBase::createTextureImage() {
 	vulkanTextureMap.createTextureImage(device, graphicsQueue, physicalDevice);
 }
 
+void VulkanBase::createCubemap() {
+	vulkanCubemap.createCubemap(device, physicalDevice, graphicsQueue);
+}
+
 void VulkanBase::createTextureImageView() {
 	vulkanTextureMap.createTextureImageView(device);
 }
 
+void VulkanBase::createCubeImageView() {
+	vulkanCubemap.createCubemapImageView(device);
+}
+
 void VulkanBase::createTextureSampler() {
 	vulkanTextureMap.createTextureSampler(device, physicalDevice);
+}
+
+void VulkanBase::createCubeSampler() {
+	vulkanCubemap.createCubemapSampler(device, physicalDevice);
 }
 
 void VulkanBase::createColorResources() {
@@ -826,6 +852,14 @@ void VulkanBase::createFrameBuffers() {
 
 void VulkanBase::createDescriptorSetLayout() {
 	vulkanUniformBuffer.createDescriptorSetLayout(device);
+}
+
+void VulkanBase::createSkyboxDescriptorSetLayout() {
+	vulkanCubemap.createSkyboxDescriptorSetLayout(device);
+}
+
+void VulkanBase::createSkyboxDescriptorSets() {
+	vulkanCubemap.createSkyboxDescriptorSets(device);
 }
 
 void VulkanBase::createSwapSystem() {
@@ -908,6 +942,10 @@ void VulkanBase::cleanupUniformBuffers() {
 
 void VulkanBase::cleanupTextureMapping() {
 	vulkanTextureMap.cleanup(device);
+}
+
+void VulkanBase::cleanupCubemap() {
+	vulkanCubemap.cleanup(device);
 }
 
 

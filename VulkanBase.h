@@ -80,13 +80,20 @@ protected:
 	void createDepthResources();
 	void createFrameBuffers();
 
+	void createSkyboxDescriptorSetLayout();
+	void createSkyboxDescriptorSets();
+	void createSkyboxVertexBuffer();
+
 	void createSkyBoxPipeline();
 
 	void createDescriptorSetLayout();
 	void createSwapSystem();
 	void createTextureImage();
+	void createCubemap();
 	void createTextureImageView();
+	void createCubeImageView();
 	void createTextureSampler();
+	void createCubeSampler();
 	void createDescriptorComponents();
 
 	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
@@ -100,6 +107,7 @@ protected:
 	void cleanupBuffers();
 	void cleanupUniformBuffers();
 	void cleanupTextureMapping();
+	void cleanupCubemap();
 
 	VkShaderModule createShaderModule(const std::vector<char>& code);	
 };

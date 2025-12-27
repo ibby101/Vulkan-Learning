@@ -27,19 +27,26 @@ private:
 		createSwapSystem();
 		createRenderPass();
 		createDescriptorSetLayout();
+		createSkyboxDescriptorSetLayout();
 		createGraphicsPipeline();
+		createSkyBoxPipeline();
 		createCommandPool(queueFamilies);
 		createColorResources();
 		createDepthResources();
 		createFrameBuffers();
 		createTextureImage();
+		createCubemap();
 		createTextureImageView();
+		createCubeImageView();
 		createTextureSampler();
+		createCubeSampler();
 		loadModel();
 		createVertexBuffer();
+		createSkyboxVertexBuffer();
 		createIndexBuffer();
 		createUniformBuffers();
 		createDescriptorComponents();
+		createSkyboxDescriptorSets();
 		createCommandBuffer();
 		createSyncObjects();
 	}
