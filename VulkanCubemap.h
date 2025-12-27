@@ -3,11 +3,13 @@
 #include "CommonHeaders.h"
 #include "VulkanBuffer.h"
 #include "VulkanTextureMap.h"
+#include "VulkanUniformBuffer.h"
 
 class VulkanCubemap {
 private:
 	VulkanBuffer& vulkanBuffer;
 	VulkanTextureMap& vulkanTMap;
+	VulkanUniformBuffer& vulkanUniform;
 
 	VkImage cubemapImage = VK_NULL_HANDLE;
 	VkDeviceMemory cubemapImageMemory = VK_NULL_HANDLE;
@@ -28,21 +30,22 @@ public:
 	VkPipeline skyboxPipeline = VK_NULL_HANDLE;
 	VkPipelineLayout skyboxPipelineLayout = VK_NULL_HANDLE;
 	VkDescriptorSetLayout skyboxDescriptorSetLayout = VK_NULL_HANDLE;
+	std::vector<VkDescriptorSet> skyboxDescriptorSets;
 
 	VkBuffer skyboxVertexBuffer;
 	VkDeviceMemory skyboxVertexBufferMemory;
 
 
 
-	VulkanCubemap(VulkanBuffer& buffer, VulkanTextureMap& textureMap) : vulkanBuffer(buffer), vulkanTMap(textureMap) {}
+	VulkanCubemap(VulkanBuffer& buffer, VulkanTextureMap& textureMap, VulkanUniformBuffer& uBuffer) : vulkanBuffer(buffer), vulkanTMap(textureMap), vulkanUniform(uBuffer) {}
 
 	void createCubemap(VkDevice device, VkPhysicalDevice physicalDevice, VkQueue graphicsQueue);
 	void createCubemapImageView(VkDevice device);
 	void createCubemapSampler(VkDevice device, VkPhysicalDevice physicalDevice);
 
-	void createSkyboxVertexBuffer();
+	void createSkyboxVertexBuffer(VkDevice device, VkPhysicalDevice physicalDevice, VkQueue graphicsQueue);
 	void createSkyboxDescriptorSetLayout(VkDevice device);
-	void createSkyboxDescriptorSets();
+	void createSkyboxDescriptorSets(VkDevice device);
 
 	void cleanup(VkDevice device);
 };

@@ -170,6 +170,8 @@
   <ItemGroup>
     <None Include="frag.spv" />
     <None Include="shader.frag" />
+    <None Include="skybox.frag" />
+    <None Include="skybox.vert" />
     <None Include="vert.spv" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

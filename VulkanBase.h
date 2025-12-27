@@ -19,7 +19,7 @@ protected:
 		vulkanSwapChain(vulkanQueue, vulkanTextureMap, vulkanBuffer, vulkanSampling),
 		vulkanUniformBuffer(vulkanBuffer, vulkanTextureMap),
 		vulkanSampling(vulkanTextureMap),
-		vulkanCubemap(vulkanBuffer, vulkanTextureMap)
+		vulkanCubemap(vulkanBuffer, vulkanTextureMap, vulkanUniformBuffer)
 		
 	{}
 

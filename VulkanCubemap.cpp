@@ -121,6 +121,53 @@ void VulkanCubemap::createSkyboxDescriptorSetLayout(VkDevice device) {
 	}
 }
 
+void VulkanCubemap::createSkyboxVertexBuffer(VkDevice device, VkPhysicalDevice physicalDevice, VkQueue graphicsQueue) {
+	VkDeviceSize bufferSize = sizeof(float) * skyboxVertices.size();
+
+	VkBuffer stagingBuffer;
+	VkDeviceMemory stagingBufferMemory;
+
+	vulkanBuffer.createBuffer(device, physicalDevice, bufferSize,
+		VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+		VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+		stagingBuffer, stagingBufferMemory);
+
+	void* data;
+	vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
+	memcpy(data, skyboxVertices.data(), (size_t)bufferSize);
+	vkUnmapMemory(device, stagingBufferMemory);
+
+	vulkanBuffer.createBuffer(device, physicalDevice, bufferSize,
+		VK_BUFFER_USAGE_TRANSFER_DST_BIT |
+		VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+		skyboxVertexBuffer, skyboxVertexBufferMemory);
+
+	vulkanBuffer.copyBuffer(device, graphicsQueue, stagingBuffer,
+		skyboxVertexBuffer, bufferSize);
+
+	vkDestroyBuffer(device, stagingBuffer, nullptr);
+	vkFreeMemory(device, stagingBufferMemory, nullptr);
+}
+
+void VulkanCubemap::createSkyboxDescriptorSets(VkDevice device) {
+	skyboxDescriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
+
+	std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT,
+		skyboxDescriptorSetLayout);
+
+	VkDescriptorSetAllocateInfo allocInfo{};
+	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+	allocInfo.descriptorPool = vulkanUniform.descriptorPool;
+	allocInfo.descriptorSetCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+	allocInfo.pSetLayouts = layouts.data();
+
+	if (vkAllocateDescriptorSets(device, &allocInfo, skyboxDescriptorSets.data()) != VK_SUCCESS) {
+		throw std::runtime_error("failed to allocate skybox descriptor sets.");
+	}
+}
+
 void VulkanCubemap::cleanup(VkDevice device) {
 	vkDestroySampler(device, cubemapSampler, nullptr);
 	vkDestroyImageView(device, cubemapImageView, nullptr);
