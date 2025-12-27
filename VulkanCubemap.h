@@ -25,14 +25,24 @@ private:
 
 
 public:
+	VkPipeline skyboxPipeline = VK_NULL_HANDLE;
+	VkPipelineLayout skyboxPipelineLayout = VK_NULL_HANDLE;
+	VkDescriptorSetLayout skyboxDescriptorSetLayout = VK_NULL_HANDLE;
+
+	VkBuffer skyboxVertexBuffer;
+	VkDeviceMemory skyboxVertexBufferMemory;
+
+
+
 	VulkanCubemap(VulkanBuffer& buffer, VulkanTextureMap& textureMap) : vulkanBuffer(buffer), vulkanTMap(textureMap) {}
 
 	void createCubemap(VkDevice device, VkPhysicalDevice physicalDevice, VkQueue graphicsQueue);
-
 	void createCubemapImageView(VkDevice device);
-
 	void createCubemapSampler(VkDevice device, VkPhysicalDevice physicalDevice);
 
-	void cleanup(VkDevice device);
+	void createSkyboxVertexBuffer();
+	void createSkyboxDescriptorSetLayout(VkDevice device);
+	void createSkyboxDescriptorSets();
 
+	void cleanup(VkDevice device);
 };

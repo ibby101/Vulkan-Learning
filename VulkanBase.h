@@ -9,6 +9,7 @@
 #include "VulkanTextureMap.h"
 #include "VulkanModelLoader.h"
 #include "VulkanSampling.h"
+#include "VulkanCubemap.h"
 
 class VulkanBase {	
 protected:
@@ -17,7 +18,9 @@ protected:
 		: vulkanTextureMap(vulkanBuffer),
 		vulkanSwapChain(vulkanQueue, vulkanTextureMap, vulkanBuffer, vulkanSampling),
 		vulkanUniformBuffer(vulkanBuffer, vulkanTextureMap),
-		vulkanSampling(vulkanTextureMap)
+		vulkanSampling(vulkanTextureMap),
+		vulkanCubemap(vulkanBuffer, vulkanTextureMap)
+		
 	{}
 
 	virtual ~VulkanBase() = default;
@@ -30,6 +33,7 @@ protected:
 	VulkanUniformBuffer vulkanUniformBuffer;
 	VulkanModelLoader modelLoader;
 	VulkanSampling vulkanSampling;
+	VulkanCubemap vulkanCubemap;
 	
 	GLFWwindow* window = nullptr;
 	VkInstance instance = VK_NULL_HANDLE;
@@ -57,6 +61,7 @@ protected:
 	bool framebufferResized = false;
 
 	virtual int rateDeviceSuitability(VkPhysicalDevice device) = 0;
+
 	bool isDeviceSuitable(VkPhysicalDevice device);
 	bool checkDeviceExtensionSupport(VkPhysicalDevice device);
 	void setupDebugMessenger();
@@ -64,6 +69,7 @@ protected:
 	void pickPhysicalDevice();
 	void createLogicalDevice();
 	void createSurface(GLFWwindow* window);
+
 	void createRenderPass();
 	void createGraphicsPipeline();
 	void createCommandPool(const QueueFamilyIndices& queueFamilies);
@@ -73,21 +79,27 @@ protected:
 	void createColorResources();
 	void createDepthResources();
 	void createFrameBuffers();
+
+	void createSkyBoxPipeline();
+
 	void createDescriptorSetLayout();
 	void createSwapSystem();
 	void createTextureImage();
 	void createTextureImageView();
 	void createTextureSampler();
 	void createDescriptorComponents();
+
 	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 	void createSyncObjects();
 	void drawFrame();
 	void createUniformBuffers();
 	void recreateSwapChain();
 	void loadModel();
+
 	void cleanupSwapChain();
 	void cleanupBuffers();
 	void cleanupUniformBuffers();
 	void cleanupTextureMapping();
+
 	VkShaderModule createShaderModule(const std::vector<char>& code);	
 };
