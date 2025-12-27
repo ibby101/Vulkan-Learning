@@ -106,5 +106,11 @@
     <None Include="skybox.frag">
       <Filter>shaders</Filter>
     </None>
+    <None Include="skybox_frag.spv">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="skybox_vert.spv">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

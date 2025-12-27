@@ -14,7 +14,7 @@ public:
 	VulkanTextureMap(VulkanBuffer& buffer);
 
 	void createImage(VkDevice device, VkPhysicalDevice physicalDevice, uint32_t width, uint32_t height,
-		uint32_t mipLevels, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, 
+		uint32_t mipLevels, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, uint32_t layers,
 		VkSampleCountFlagBits numSamples, VkMemoryPropertyFlags properties, VkImageCreateFlags flag, VkImage& image, 
 		VkDeviceMemory& imageMemory);
 

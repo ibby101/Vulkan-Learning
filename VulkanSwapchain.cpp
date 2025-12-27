@@ -239,7 +239,7 @@ void VulkanSwapChain::createDepthResources(VkDevice device, VkPhysicalDevice phy
 	VkFormat depthFormat = findDepthFormat(physicalDevice);
 
 	vulkanTMap.createImage(device, physicalDevice, swapChainExtent.width, swapChainExtent.height, 1,
-		depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, 
+		depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, 1,
 		vulkanSampling.msaaSamples, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 0, depthImage, depthImageMemory);
 
 	depthImageView = vulkanTMap.createImageView(device, depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT, 1, 1, VK_IMAGE_VIEW_TYPE_2D);

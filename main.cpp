@@ -65,9 +65,17 @@ private:
 		cleanupTextureMapping();
 		cleanupUniformBuffers();
 		cleanupBuffers();
-
+		
+		vkDestroyPipeline(device, vulkanCubemap.skyboxPipeline, nullptr);
 		vkDestroyPipeline(device, graphicsPipeline, nullptr);
+
+		vkDestroyPipelineLayout(device, vulkanCubemap.skyboxPipelineLayout, nullptr);
 		vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
+
+		vkDestroyDescriptorSetLayout(device, vulkanCubemap.skyboxDescriptorSetLayout, nullptr);
+
+		vkDestroyBuffer(device, vulkanCubemap.skyboxVertexBuffer, nullptr);
+		vkFreeMemory(device, vulkanCubemap.skyboxVertexBufferMemory, nullptr);
 
 
 		vkDestroyRenderPass(device, renderPass, nullptr);

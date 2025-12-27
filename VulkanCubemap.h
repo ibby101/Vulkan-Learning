@@ -83,7 +83,14 @@ public:
 
 
 
-	VulkanCubemap(VulkanBuffer& buffer, VulkanTextureMap& textureMap, VulkanUniformBuffer& uBuffer) : vulkanBuffer(buffer), vulkanTMap(textureMap), vulkanUniform(uBuffer) {}
+	VulkanCubemap(VulkanBuffer& buffer, VulkanTextureMap& textureMap, VulkanUniformBuffer& uBuffer) : vulkanBuffer(buffer), vulkanTMap(textureMap), vulkanUniform(uBuffer) {
+    
+        // scaling all vertices by 10
+        float scale = 500.0f;
+        for (float& vertex : skyboxVertices) {
+            vertex *= scale;
+        }
+    }
 
 	void createCubemap(VkDevice device, VkPhysicalDevice physicalDevice, VkQueue graphicsQueue);
 	void createCubemapImageView(VkDevice device);
