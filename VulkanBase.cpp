@@ -685,6 +685,10 @@ void VulkanBase::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t ima
 
 	vkCmdBindIndexBuffer(commandBuffer, vulkanBuffer.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
+	vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+		pipelineLayout, 0, 1,
+		&vulkanUniformBuffer.descriptorSets[currentFrame], 0, nullptr);
+
 	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(modelLoader.indices.size()), 1, 0, 0, 0);
 
 	vkCmdEndRenderPass(commandBuffer);

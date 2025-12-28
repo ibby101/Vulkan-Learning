@@ -65,6 +65,8 @@ private:
 		cleanupTextureMapping();
 		cleanupUniformBuffers();
 		cleanupBuffers();
+
+		cleanupCubemap();
 		
 		vkDestroyPipeline(device, vulkanCubemap.skyboxPipeline, nullptr);
 		vkDestroyPipeline(device, graphicsPipeline, nullptr);
