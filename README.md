@@ -1,6 +1,6 @@
 # Vulkan Learning Environment
 
-A project developed to understand Vulkan API concepts, including:
+A project developed to understand Vulkan and general graphics API concepts, including:
 - Validation Layers
 - Queue Families
 - Surfaces
