@@ -81,11 +81,9 @@ public:
          1.0f, -1.0f,  1.0f
     };
 
-
-
 	VulkanCubemap(VulkanBuffer& buffer, VulkanTextureMap& textureMap, VulkanUniformBuffer& uBuffer) : vulkanBuffer(buffer), vulkanTMap(textureMap), vulkanUniform(uBuffer) {
     
-        // scaling all vertices by 10
+        // scaling all vertices by 5
         float scale = 5.0f;
         for (float& vertex : skyboxVertices) {
             vertex *= scale;
