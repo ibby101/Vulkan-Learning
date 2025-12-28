@@ -18,99 +18,110 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanDebug.cpp">
+    <ClCompile Include="src\VulkanBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanQueue.cpp">
+    <ClCompile Include="src\VulkanBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanBase.cpp">
+    <ClCompile Include="src\VulkanCubemap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanBuffer.cpp">
+    <ClCompile Include="src\VulkanDebug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanSwapChain.cpp">
+    <ClCompile Include="src\VulkanModelLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanUniformBuffer.cpp">
+    <ClCompile Include="src\VulkanQueue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanTextureMap.cpp">
+    <ClCompile Include="src\VulkanSampling.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanModelLoader.cpp">
+    <ClCompile Include="src\VulkanSwapChain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanSampling.cpp">
+    <ClCompile Include="src\VulkanTextureMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanCubemap.cpp">
+    <ClCompile Include="src\VulkanUniformBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CommonHeaders.h">
+    <ClInclude Include="src\CommonHeaders.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanDebug.h">
+    <ClInclude Include="src\VulkanBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanQueue.h">
+    <ClInclude Include="src\VulkanBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanBase.h">
+    <ClInclude Include="src\VulkanCubemap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanBuffer.h">
+    <ClInclude Include="src\VulkanDebug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanSwapChain.h">
+    <ClInclude Include="src\VulkanModelLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanUniformBuffer.h">
+    <ClInclude Include="src\VulkanQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanTextureMap.h">
+    <ClInclude Include="src\VulkanSampling.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanModelLoader.h">
+    <ClInclude Include="src\VulkanSwapChain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanSampling.h">
+    <ClInclude Include="src\VulkanTextureMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanCubemap.h">
+    <ClInclude Include="src\VulkanUniformBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shader.frag">
+    <None Include="src\vert.spv">
       <Filter>shaders</Filter>
     </None>
-    <None Include="frag.spv">
+    <None Include="src\frag.spv">
       <Filter>shaders</Filter>
     </None>
-    <None Include="vert.spv">
+    <None Include="src\shader.frag">
       <Filter>shaders</Filter>
     </None>
-    <None Include="shader.vert">
+    <None Include="src\shader.vert">
       <Filter>shaders</Filter>
     </None>
-    <None Include="skybox.vert">
+    <None Include="src\skybox.frag">
       <Filter>shaders</Filter>
     </None>
-    <None Include="skybox.frag">
+    <None Include="src\skybox.vert">
       <Filter>shaders</Filter>
     </None>
-    <None Include="skybox_frag.spv">
+    <None Include="src\skybox_frag.spv">
       <Filter>shaders</Filter>
     </None>
-    <None Include="skybox_vert.spv">
+    <None Include="src\skybox_vert.spv">
       <Filter>shaders</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\checked.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="textures\texture.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="textures\viking_room.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

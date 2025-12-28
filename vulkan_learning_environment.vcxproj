@@ -139,42 +139,45 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="VulkanCubemap.cpp" />
-    <ClCompile Include="VulkanModelLoader.cpp" />
-    <ClCompile Include="VulkanSampling.cpp" />
-    <ClCompile Include="VulkanSwapChain.cpp" />
-    <ClCompile Include="VulkanTextureMap.cpp" />
-    <ClCompile Include="VulkanUniformBuffer.cpp" />
-    <None Include="shader.vert">
-      <FileType>Document</FileType>
-    </None>
-    <ClCompile Include="VulkanBase.cpp" />
-    <ClCompile Include="VulkanBuffer.cpp" />
-    <ClCompile Include="VulkanDebug.cpp" />
-    <ClCompile Include="VulkanQueue.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\VulkanBase.cpp" />
+    <ClCompile Include="src\VulkanBuffer.cpp" />
+    <ClCompile Include="src\VulkanCubemap.cpp" />
+    <ClCompile Include="src\VulkanDebug.cpp" />
+    <ClCompile Include="src\VulkanModelLoader.cpp" />
+    <ClCompile Include="src\VulkanQueue.cpp" />
+    <ClCompile Include="src\VulkanSampling.cpp" />
+    <ClCompile Include="src\VulkanSwapChain.cpp" />
+    <ClCompile Include="src\VulkanTextureMap.cpp" />
+    <ClCompile Include="src\VulkanUniformBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CommonHeaders.h" />
-    <ClInclude Include="VulkanBuffer.h" />
-    <ClInclude Include="VulkanBase.h" />
-    <ClInclude Include="VulkanCubemap.h" />
-    <ClInclude Include="VulkanDebug.h" />
-    <ClInclude Include="VulkanModelLoader.h" />
-    <ClInclude Include="VulkanQueue.h" />
-    <ClInclude Include="VulkanSampling.h" />
-    <ClInclude Include="VulkanSwapChain.h" />
-    <ClInclude Include="VulkanTextureMap.h" />
-    <ClInclude Include="VulkanUniformBuffer.h" />
+    <ClInclude Include="src\CommonHeaders.h" />
+    <ClInclude Include="src\VulkanBase.h" />
+    <ClInclude Include="src\VulkanBuffer.h" />
+    <ClInclude Include="src\VulkanCubemap.h" />
+    <ClInclude Include="src\VulkanDebug.h" />
+    <ClInclude Include="src\VulkanModelLoader.h" />
+    <ClInclude Include="src\VulkanQueue.h" />
+    <ClInclude Include="src\VulkanSampling.h" />
+    <ClInclude Include="src\VulkanSwapChain.h" />
+    <ClInclude Include="src\VulkanTextureMap.h" />
+    <ClInclude Include="src\VulkanUniformBuffer.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="frag.spv" />
-    <None Include="shader.frag" />
-    <None Include="skybox.frag" />
-    <None Include="skybox.vert" />
-    <None Include="skybox_frag.spv" />
-    <None Include="skybox_vert.spv" />
-    <None Include="vert.spv" />
+    <None Include="src\frag.spv" />
+    <None Include="src\shader.frag" />
+    <None Include="src\shader.vert" />
+    <None Include="src\skybox.frag" />
+    <None Include="src\skybox.vert" />
+    <None Include="src\skybox_frag.spv" />
+    <None Include="src\skybox_vert.spv" />
+    <None Include="src\vert.spv" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\checked.jpg" />
+    <Image Include="textures\texture.jpg" />
+    <Image Include="textures\viking_room.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

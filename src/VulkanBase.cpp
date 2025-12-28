@@ -216,8 +216,8 @@ bool VulkanBase::checkDeviceExtensionSupport(VkPhysicalDevice device) {
 }
 
 void VulkanBase::createGraphicsPipeline() {
-	auto vertShadercode = readFile("vert.spv");
-	auto fragShaderCode = readFile("frag.spv");
+	auto vertShadercode = readFile("src/vert.spv");
+	auto fragShaderCode = readFile("src/frag.spv");
 
 	VkShaderModule vertShaderModule = createShaderModule(vertShadercode);
 	VkShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -485,8 +485,8 @@ void VulkanBase::createCommandBuffer() {
 }
 
 void VulkanBase::createSkyBoxPipeline() {
-	auto vertShaderCode = readFile("skybox_vert.spv");
-	auto fragShaderCode = readFile("skybox_frag.spv");
+	auto vertShaderCode = readFile("src/skybox_vert.spv");
+	auto fragShaderCode = readFile("src/skybox_frag.spv");
 
 	VkShaderModule vertShaderModule = createShaderModule(vertShaderCode);
 	VkShaderModule fragShaderModule = createShaderModule(fragShaderCode);
