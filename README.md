@@ -1,4 +1,4 @@
-# Vulkan Learning Environment
+# Vulkan Renderer
 
 A project developed to understand Vulkan and general graphics API concepts, including:
 - Validation Layers
